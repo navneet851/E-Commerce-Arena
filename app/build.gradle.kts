@@ -1,11 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id ("kotlin-parcelize")
-    id ("androidx.navigation.safeargs.kotlin")
-    id ("dagger.hilt.android.plugin")
-    kotlin("kapt")
-    id ("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -72,21 +68,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
-    //Navigation component
-    implementation (libs.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
+    //navigation new
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     //Glide
     implementation (libs.glide)
 
-    //Dagger hilt
-    implementation (libs.hilt.android)
-    kapt (libs.hilt.compiler)
-
     //Firebase
     implementation (libs.firebase.auth)
 
-    //Coroutines with firebase
-    implementation (libs.kotlinx.coroutines.play.services)
 }
