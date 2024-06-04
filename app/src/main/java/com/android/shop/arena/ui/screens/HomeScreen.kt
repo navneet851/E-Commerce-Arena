@@ -6,6 +6,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun HomeScreen() {
+fun HomeScreen() {
     Text(text = "home")
 }

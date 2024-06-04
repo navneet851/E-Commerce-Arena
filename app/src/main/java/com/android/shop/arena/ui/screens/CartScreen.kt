@@ -6,6 +6,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun CartScreen() {
+fun CartScreen() {
     Text(text = "cart")
 }

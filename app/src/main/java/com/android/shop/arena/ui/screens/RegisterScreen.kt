@@ -29,7 +29,7 @@ import com.android.shop.arena.ui.components.PasswordInputField
 
 @Preview(showBackground = true)
 @Composable
-private fun RegisterScreen() {
+fun RegisterScreen() {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 

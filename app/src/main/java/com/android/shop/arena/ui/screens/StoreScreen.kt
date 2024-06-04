@@ -6,6 +6,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun StoreScreen() {
+fun StoreScreen() {
     Text(text = "store")
 }

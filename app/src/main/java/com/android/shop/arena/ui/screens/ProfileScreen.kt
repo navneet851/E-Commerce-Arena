@@ -6,6 +6,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-private fun ProfileScreen() {
+fun ProfileScreen() {
     Text(text = "profile")
 }
