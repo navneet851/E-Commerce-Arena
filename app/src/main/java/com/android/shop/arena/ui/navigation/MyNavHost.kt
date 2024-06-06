@@ -14,34 +14,23 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun MyNavHost(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Home){
-            composable<Home> {
+    NavHost(navController = navController, startDestination = "home"){
+            composable("home") {
                 HomeScreen()
             }
-            composable<Store> {
+            composable("store") {
                 StoreScreen()
             }
-            composable<Cart> {
+            composable("cart") {
                 CartScreen()
             }
-            composable<Profile> {
+            composable("profile") {
                 ProfileScreen()
             }
     }
 }
 
 
-@Serializable
-object Home
-
-@Serializable
-object Store
-
-@Serializable
-object Cart
-
-@Serializable
-object Profile
 
 
 
