@@ -3,6 +3,8 @@ package com.android.shop.arena.ui.navigation
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -15,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.android.shop.arena.R
+import com.android.shop.arena.ui.theme.CardColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -44,9 +48,9 @@ fun BottomBar(navController: NavHostController) {
 
     NavigationBar(
         Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().height(70.dp),
         tonalElevation = 6.dp,
-        containerColor = Color.White,
+        containerColor = CardColor,
 
     ) {
 
@@ -77,7 +81,7 @@ fun BottomBar(navController: NavHostController) {
                     indicatorColor = Color.Transparent
                 ),
                 label = {
-                    Text(text = item.title)
+                    Text(text = item.title, fontSize = 12.sp)
                 },
                 alwaysShowLabel = true
             )

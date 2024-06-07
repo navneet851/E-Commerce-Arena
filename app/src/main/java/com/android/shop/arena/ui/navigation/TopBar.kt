@@ -2,6 +2,7 @@ package com.android.shop.arena.ui.navigation
 
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.android.shop.arena.R
+import com.android.shop.arena.ui.theme.CardColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +33,7 @@ fun TopBar() {
                 Text(text = "")
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White,
+            containerColor = CardColor,
             titleContentColor = Color.Black,
             actionIconContentColor = Color.Black
         ),
