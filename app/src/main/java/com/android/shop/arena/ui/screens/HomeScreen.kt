@@ -27,72 +27,32 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.shop.arena.R
+import com.android.shop.arena.ui.components.ProductCard
 import com.android.shop.arena.ui.theme.CardColor
 
-@Preview
+@PreviewScreenSizes
 @Composable
 fun HomeScreen() {
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-        items(10) {
-            ProductCard(product = Product(imageResource = R.drawable.gta5_cover, title = "Grand Theft Auto V", description = "description", category = "Action"))
-        }
-
-    }
-}
-
-
-
-@Composable
-fun ProductCard(product: Product) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(9.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+    LazyVerticalGrid(
+        modifier = Modifier.padding(8.dp),
+        columns = GridCells.Fixed(2)
     ) {
-        Column(
-           horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(CardColor)
-                .padding(5.dp)
-        ) {
-            Image(
-                painter = painterResource(id = product.imageResource),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(160.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .fillMaxWidth()
+        items(10) {
+            ProductCard(
+                modifier = Modifier.size(160.dp),
+                product = Product(imageResource = R.drawable.gta5_cover, title = "Grand Theft Auto V", description = "description", category = "Action")
             )
-
-            Text(
-                text = "Action",
-                color = Color(0xFF4848AA),
-                textAlign = TextAlign.Left,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp, 5.dp))
-
-
-            Text(
-                text = product.title,
-                color = Color.Black,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Left,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(5.dp, 0.dp, 5.dp, 10.dp)
-            )
-
         }
+
     }
 }
+
+
+
 
 data class Product(
     val imageResource: Int,
