@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -75,7 +76,12 @@ dependencies {
     //Glide
     implementation (libs.glide)
 
-    //Firebase
-    implementation (libs.firebase.auth)
+    // Import the BoM for the Firebase platform
+    implementation(platform(libs.firebase.bom))
+
+    // Add the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation(libs.firebase.auth)
+
 
 }
