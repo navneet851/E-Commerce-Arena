@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.shop.arena.ui.screens.RegisterScreen
 import com.android.shop.arena.ui.theme.ArenaTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ArenaTheme {
-                App()
+                //LoginDialog()
+                RegisterScreen()
             }
         }
     }

@@ -31,11 +31,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun InputField(
     inputType : String,
-    leadingIcon : Painter
+    leadingIcon : Painter,
+    text : String,
+    onTextChange : (String) -> Unit
 ) {
-    var text by remember {
-        mutableStateOf("")
-    }
 
     TextField(
         modifier = Modifier
@@ -47,9 +46,7 @@ fun InputField(
             unfocusedIndicatorColor = Color.Transparent,
         ),
         value = text,
-        onValueChange = {
-            text = it
-        },
+        onValueChange = onTextChange,
         label = {
             Text(text = inputType)
         },
