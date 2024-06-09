@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.shop.arena.ui.navigation.BottomBar
 import com.android.shop.arena.ui.navigation.MyNavHost
@@ -20,13 +21,19 @@ fun App(modifier: Modifier = Modifier) {
 
     val navController = rememberNavController()
 
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
     Scaffold (
         containerColor = Color.White,
         topBar = {
-                 TopBar()
+            if (currentRoute != "register") {
+                TopBar()
+            }
         },
         bottomBar = {
-            BottomBar(navController)
+            if (currentRoute != "register") {
+                BottomBar(navController)
+            }
         }
     ){
         Box(modifier = Modifier.padding(it).fillMaxSize()){

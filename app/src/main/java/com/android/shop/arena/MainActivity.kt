@@ -20,8 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ArenaTheme {
-                //LoginDialog()
-                RegisterScreen()
+                App()
             }
         }
     }
