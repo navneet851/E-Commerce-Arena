@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.android.shop.arena.R
+import com.android.shop.arena.ui.theme.InputColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,11 +52,24 @@ fun PasswordInputField(
     TextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, 10.dp)
+            .padding(16.dp, 16.dp, 16.dp, 0.dp)
             .clip(RoundedCornerShape(10.dp))
         ,
+        singleLine = true,
         colors = TextFieldDefaults.colors(
             unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            focusedLeadingIconColor = Color.Black,
+            unfocusedLeadingIconColor = Color.Black,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.Black,
+            unfocusedContainerColor = InputColor,
+            focusedContainerColor = InputColor,
+            cursorColor = Color.Black,
+            focusedTrailingIconColor = Color.Black,
+            unfocusedTrailingIconColor = Color.Black
         ),
         value = password,
         onValueChange = onPasswordChange,

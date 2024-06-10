@@ -1,5 +1,6 @@
 package com.android.shop.arena.ui.components
 
+import android.renderscript.ScriptGroup.Input
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +25,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.android.shop.arena.ui.theme.CardColor
+import com.android.shop.arena.ui.theme.InputColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,11 +44,22 @@ fun InputField(
     TextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, 10.dp)
+            .padding(16.dp, 16.dp, 16.dp, 0.dp)
             .clip(RoundedCornerShape(10.dp))
         ,
+        singleLine = true,
         colors = TextFieldDefaults.colors(
             unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            focusedLeadingIconColor = Color.Black,
+            unfocusedLeadingIconColor = Color.Black,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            focusedLabelColor = Color.Gray,
+            unfocusedLabelColor = Color.Black,
+            unfocusedContainerColor = InputColor,
+            focusedContainerColor = InputColor,
+            cursorColor = Color.Black,
         ),
         value = text,
         onValueChange = onTextChange,

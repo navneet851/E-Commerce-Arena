@@ -26,12 +26,12 @@ fun App(modifier: Modifier = Modifier) {
     Scaffold (
         containerColor = Color.White,
         topBar = {
-            if (currentRoute != "register") {
+            if (currentRoute != "register" && currentRoute != "login") {
                 TopBar()
             }
         },
         bottomBar = {
-            if (currentRoute != "register") {
+            if (currentRoute != "register" && currentRoute != "login") {
                 BottomBar(navController)
             }
         }

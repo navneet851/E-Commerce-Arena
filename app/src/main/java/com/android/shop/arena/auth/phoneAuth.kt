@@ -32,7 +32,7 @@ fun onLoginClicked (context: Context, phoneNumber: String, onCodeSent: (Boolean)
     val callback = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
             Log.d("phoneBook","verification completed")
-            signInWithPhoneAuthCredential(context,credential)
+            signInWithPhoneAuthCredential(context,credential){}
         }
 
         override fun onVerificationFailed(p0: FirebaseException) {
@@ -61,26 +61,29 @@ fun onLoginClicked (context: Context, phoneNumber: String, onCodeSent: (Boolean)
 
 }
 
-fun verifyPhoneNumberWithCode(context: Context, verificationId: String, code: String) {
+fun verifyPhoneNumberWithCode(context: Context, verificationId: String, code: String, onSuccess: (user: String) -> Unit) {
     val credential = PhoneAuthProvider.getCredential(verificationId, code)
-    signInWithPhoneAuthCredential(context,credential)
+    signInWithPhoneAuthCredential(context,credential){
+        onSuccess(it)
+    }
 }
 
-private fun signInWithPhoneAuthCredential(context: Context, credential: PhoneAuthCredential) {
+private fun signInWithPhoneAuthCredential(context: Context, credential: PhoneAuthCredential, onSuccess : (user : String) -> Unit) {
     context.getActivity()?.let {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(it) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    val user = task.result?.user
+                    val user = task.result?.user?.uid
+                    onSuccess(user!!)
                     Toast.makeText(context,"logged in", Toast.LENGTH_SHORT).show()
-                    Log.d("phoneBook","logged in ${user!!.uid}")
+                    Log.d("Firebase","logged in $user")
 
                 } else {
                     // Sign in failed, display a message and update the UI
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
-                        Log.d("phoneBook","wrong otp")
+                        Log.d("Firebase","wrong otp")
                     }
                     // Update UI
                 }

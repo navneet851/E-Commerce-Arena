@@ -1,7 +1,9 @@
 package com.android.shop.arena.ui.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,13 +12,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,11 +35,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.shop.arena.R
+import com.android.shop.arena.auth.checkPhoneNumberInDatabase
 import com.android.shop.arena.auth.onLoginClicked
 import com.android.shop.arena.auth.storedVerificationId
 import com.android.shop.arena.auth.verifyPhoneNumberWithCode
@@ -41,10 +50,13 @@ import com.android.shop.arena.ui.components.InputField
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.components.PasswordInputField
 import com.android.shop.arena.ui.theme.CardColor
+import com.android.shop.arena.ui.theme.InputColor
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
+
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var isDialogVisible by remember { mutableStateOf(false) }
@@ -55,6 +67,21 @@ fun RegisterScreen(navController: NavHostController) {
     var phoneNumber by remember {
         mutableStateOf("")
     }
+    var alreadyExist by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 = phoneNumber) {
+        if (phoneNumber.length == 10){
+            checkPhoneNumberInDatabase(phoneNumber){
+                alreadyExist = it
+            }
+        }
+        else{
+            alreadyExist = false
+        }
+    }
+
+
     var otpRequestProgressed by remember { mutableStateOf(true) }
 
     var otp by remember { mutableStateOf("") }
@@ -67,6 +94,7 @@ fun RegisterScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
     ){
+
         Image(
             modifier = Modifier
                 .fillMaxSize()
@@ -75,6 +103,23 @@ fun RegisterScreen(navController: NavHostController) {
             contentScale = ContentScale.Crop,
             contentDescription = "sign_in_up_background")
     }
+
+
+
+    Text(
+        text = "skip",
+        fontSize = 13.sp,
+        color = Color.White,
+        textAlign = TextAlign.Right,
+        textDecoration = TextDecoration.Underline,
+        modifier = Modifier
+            .padding(16.dp, 10.dp)
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate("home")
+            }
+        ,
+    )
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -91,13 +136,30 @@ fun RegisterScreen(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(40.dp))
         InputField(inputType = "Name", leadingIcon = painterResource(id = R.drawable.baseline_person_24), name, onTextChange = { name = it })
-        InputField(inputType = "Phone Number", leadingIcon = painterResource(id = R.drawable.baseline_phone_24), phoneNumber, onTextChange = { phoneNumber = it })
+
+        Column {
+            InputField(inputType = "Phone Number", leadingIcon = painterResource(id = R.drawable.baseline_phone_24), phoneNumber, onTextChange = { phoneNumber = it })
+
+            if(alreadyExist){
+                Text(
+                    text = "Number already exist",
+                    fontSize = 12.sp,
+                    color = Color.Red,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .padding(16.dp, 0.dp)
+                    ,
+                )
+            }
+        }
+
         PasswordInputField(inputType = "Password", leadingIcon = painterResource(id = R.drawable.baseline_lock_24), password = password, onPasswordChange = { password = it }, confirmPassword = confirmPassword, onConfirmPasswordChange = { confirmPassword = it })
         PasswordInputField(inputType = "Confirm Password", leadingIcon = painterResource(id = R.drawable.baseline_lock_24), password = confirmPassword, onPasswordChange = { confirmPassword = it }, confirmPassword = password, onConfirmPasswordChange = { password = it })
         Button(
+            modifier = Modifier.padding(16.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
+                containerColor = InputColor,
                 contentColor = Color.Black
             ),
             onClick = {
@@ -112,14 +174,27 @@ fun RegisterScreen(navController: NavHostController) {
         ) {
             Text(text = "Send Otp")
         }
+        
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Login",
+            fontSize = 14.sp,
+            color = Color.White,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier
+                .padding(16.dp, 10.dp)
+                .clickable {
+                    navController.navigate("login")
+                }
+            ,
+        )
 
 
-        if (!otpRequestProgressed) {
-            Loader() // Replace this with your actual loader composable
-        }
     }
 
-
+    if (!otpRequestProgressed) {
+        Loader()
+    }
 
 
 
@@ -128,9 +203,9 @@ fun RegisterScreen(navController: NavHostController) {
     //dialog box
 
     if (isDialogVisible) {
-        Log.d("phoneBook", "code senttopt-----$storedVerificationId")
+        Log.d("Firebase", "code in dialog-----$storedVerificationId")
         AlertDialog(
-            containerColor = Color.White,
+            containerColor = InputColor,
             titleContentColor = Color.Black,
             onDismissRequest = { isDialogVisible = false },
             title = { Text(text = "Enter OTP") },
@@ -139,6 +214,19 @@ fun RegisterScreen(navController: NavHostController) {
                     value = otp,
                     onValueChange = { otp = it },
                     label = { Text("OTP") },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedIndicatorColor = Color.Black,
+                        focusedIndicatorColor = Color.Black,
+                        focusedLeadingIconColor = Color.Black,
+                        unfocusedLeadingIconColor = Color.Black,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        unfocusedLabelColor = Color.Black,
+                        unfocusedContainerColor = InputColor,
+                        focusedContainerColor = InputColor,
+                        cursorColor = Color.Black,
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
             },
@@ -150,9 +238,13 @@ fun RegisterScreen(navController: NavHostController) {
                         contentColor = Color.Black
                     ),
                     onClick = {
-                        verifyPhoneNumberWithCode(context, storedVerificationId, otp)
+                        verifyPhoneNumberWithCode(context, storedVerificationId, otp){
+                            val user = User(it, name, phoneNumber, password)
+                            addUser(user)
+                            navController.navigate("home")
+                        }
                         Log.d("phoneBook", "$context $storedVerificationId $otp")
-                        navController.navigate("home")
+                        isDialogVisible = false
                     }
                 ) {
                     Text("Verify")
@@ -162,12 +254,26 @@ fun RegisterScreen(navController: NavHostController) {
     }
 }
 
+fun addUser(user : User){
+    val db = FirebaseFirestore.getInstance()
+    db.collection("users")
+        .document(user.phone)
+        .set(user)
+        .addOnSuccessListener {
+            Log.d("Firestore", "User successfully written!")
+        }
+        .addOnFailureListener { e ->
+            Log.w("Firestore", "Error writing user", e)
+        }
+}
+
 
 
 
 
 
 data class User(
+    val uid: String,
     val name: String,
     val phone: String,
     val password: String
