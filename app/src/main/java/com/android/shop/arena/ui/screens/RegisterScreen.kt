@@ -106,7 +106,7 @@ fun RegisterScreen(navController: NavHostController) {
 
 
     Text(
-        text = "skip",
+        text = "Skip",
         fontSize = 13.sp,
         color = Color.White,
         textAlign = TextAlign.Right,
