@@ -53,7 +53,6 @@ import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.theme.InputColor
 import com.google.firebase.firestore.FirebaseFirestore
 
-
 @Composable
 fun RegisterScreen(navController: NavHostController) {
 
@@ -163,12 +162,21 @@ fun RegisterScreen(navController: NavHostController) {
                 contentColor = Color.Black
             ),
             onClick = {
-                onLoginClicked(context = context, phoneNumber = phoneNumber){
-                    otpRequestProgressed = it
-                    isDialogVisible = it
+                if(alreadyExist){
+                    Toast.makeText(context, "Number already exist", Toast.LENGTH_SHORT).show()
                 }
-                otpRequestProgressed = false
+                else{
+                    if (phoneNumber.isNotBlank() && (phoneNumber.length == 10) && name.isNotBlank() && (password.isNotBlank() == confirmPassword.isNotBlank())) {
+                        onLoginClicked(context = context, phoneNumber = phoneNumber){
+                            isDialogVisible = it
+                            otpRequestProgressed = it
+                        }
+                        otpRequestProgressed = false
+                    } else {
+                        Toast.makeText(context, "Enter Valid Details!", Toast.LENGTH_SHORT).show()
+                    }
 
+                }
 
         }
         ) {
@@ -238,13 +246,25 @@ fun RegisterScreen(navController: NavHostController) {
                         contentColor = Color.Black
                     ),
                     onClick = {
-                        verifyPhoneNumberWithCode(context, storedVerificationId, otp){
-                            val user = User(it, name, phoneNumber, password)
-                            addUser(user)
-                            navController.navigate("home")
+                        if (otp.isBlank() || otp.length < 6 || otp.length > 6){
+                            Toast.makeText(context, "Enter Six Digit Number", Toast.LENGTH_SHORT).show()
                         }
-                        Log.d("phoneBook", "$context $storedVerificationId $otp")
-                        isDialogVisible = false
+                        else{
+                            verifyPhoneNumberWithCode(context, storedVerificationId, otp){
+                                if (it == "failed"){
+                                    Toast.makeText(context, "Wrong Otp", Toast.LENGTH_SHORT).show()
+                                }
+                                else{
+                                    val user = User(it, name, phoneNumber, password)
+                                    addUser(user)
+                                    navController.navigate("home")
+                                    isDialogVisible = false
+                                }
+
+                            }
+
+                        }
+
                     }
                 ) {
                     Text("Verify")

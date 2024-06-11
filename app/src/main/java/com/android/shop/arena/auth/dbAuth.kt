@@ -18,6 +18,7 @@ fun checkPhoneNumberInDatabase(phoneNumber: String, isPresent : (Boolean) -> Uni
             } else {
                 // The phone number is not present in the database
                 Log.d("Firestore", "Phone number not found in database")
+                isPresent(false)
             }
         }
         .addOnFailureListener { e ->
@@ -26,7 +27,9 @@ fun checkPhoneNumberInDatabase(phoneNumber: String, isPresent : (Boolean) -> Uni
         }
 }
 
-fun checkUserCredentialsInDatabase(phoneNumber: String, password: String) {
+
+//Login
+fun checkUserCredentialsInDatabase(phoneNumber: String, password: String, onSuccess : (Boolean) -> Unit) {
     val db = FirebaseFirestore.getInstance()
     db.collection("users")
         .document(phoneNumber)
@@ -39,9 +42,11 @@ fun checkUserCredentialsInDatabase(phoneNumber: String, password: String) {
                     if (docPassword == password) {
                         // The password matches
                         Log.d("Firestore", "User credentials are correct")
+                        onSuccess(true)
                     } else {
                         // The password does not match
                         Log.d("Firestore", "Incorrect password")
+                        onSuccess(false)
                     }
                 }
             } else {

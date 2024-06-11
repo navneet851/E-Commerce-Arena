@@ -83,6 +83,7 @@ private fun signInWithPhoneAuthCredential(context: Context, credential: PhoneAut
                     // Sign in failed, display a message and update the UI
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         // The verification code entered was invalid
+                        onSuccess("failed")
                         Log.d("Firebase","wrong otp")
                     }
                     // Update UI

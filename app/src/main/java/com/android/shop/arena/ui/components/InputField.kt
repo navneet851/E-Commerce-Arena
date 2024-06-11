@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -41,11 +42,16 @@ fun InputField(
     onTextChange : (String) -> Unit
 ) {
 
+    var isFocused by remember { mutableStateOf(false) }
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp, 16.dp, 16.dp, 0.dp)
             .clip(RoundedCornerShape(10.dp))
+            .onFocusChanged { focusState ->
+                isFocused = focusState.isFocused
+            }
         ,
         singleLine = true,
         colors = TextFieldDefaults.colors(
@@ -64,8 +70,9 @@ fun InputField(
         value = text,
         onValueChange = onTextChange,
         label = {
-            Text(text = inputType)
+                Text(text = inputType)
         },
+
         leadingIcon = {
             Icon(painter = leadingIcon, contentDescription = "Enter $inputType")
         }

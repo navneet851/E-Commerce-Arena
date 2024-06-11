@@ -14,7 +14,7 @@ import com.android.shop.arena.ui.screens.StoreScreen
 
 @Composable
 fun MyNavHost(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "register"){
+    NavHost(navController = navController, startDestination = "login"){
             composable("register") {
                 RegisterScreen(navController)
             }
