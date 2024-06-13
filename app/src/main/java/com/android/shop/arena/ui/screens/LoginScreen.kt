@@ -31,10 +31,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.android.shop.arena.R
 import com.android.shop.arena.auth.checkPhoneNumberInDatabase
@@ -42,19 +40,18 @@ import com.android.shop.arena.auth.checkUserCredentialsInDatabase
 import com.android.shop.arena.auth.onLoginClicked
 import com.android.shop.arena.auth.storedVerificationId
 import com.android.shop.arena.auth.verifyPhoneNumberWithCode
-import com.android.shop.arena.data.DataStoreManager
+import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.InputField
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.components.PasswordInputField
 import com.android.shop.arena.ui.theme.InputColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(navController: NavHostController, dataStore: DataStoreManager) {
 
     var phoneNumber by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -67,7 +64,6 @@ fun LoginScreen(navController: NavHostController) {
         mutableStateOf(false)
     }
 
-    val dataStoreManager = DataStoreManager(context)
 
     LaunchedEffect(key1 = phoneNumber) {
         if (phoneNumber.length == 10){
@@ -264,7 +260,7 @@ fun LoginScreen(navController: NavHostController) {
 
                                         CoroutineScope(Dispatchers.Main).launch {
                                             val token = it
-                                            dataStoreManager.saveUID(token)
+                                            dataStore.saveUID(token)
                                             navController.navigate("home")
                                             otpRequestProgressed = true
                                         }

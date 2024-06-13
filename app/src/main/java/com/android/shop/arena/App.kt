@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.navigation.BottomBar
 import com.android.shop.arena.ui.navigation.MyNavHost
 import com.android.shop.arena.ui.navigation.TopBar
@@ -20,24 +23,49 @@ import com.android.shop.arena.ui.navigation.TopBar
 fun App(modifier: Modifier = Modifier) {
 
     val navController = rememberNavController()
-
+    val dataStore = DataStoreManager(LocalContext.current)
+    val bars = rememberSaveable {
+        mutableStateOf(true)
+    }
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    when (currentRoute) {
+        "home" -> {
+            bars.value = true
+        }
+        "cart" -> {
+            bars.value = true
+        }
+        "shop" -> {
+            bars.value = true
+        }
+        "profile" -> {
+            bars.value = true
+        }
+        "login" -> {
+            bars.value = false
+        }
+        "register" -> {
+            bars.value = false
+        }
+        "notification" -> {
+            bars.value = true
+        }
+    }
 
     Scaffold (
         containerColor = Color.White,
         topBar = {
-            if (currentRoute != "register" && currentRoute != "login") {
-                TopBar()
-            }
+            TopBar(bars)
         },
         bottomBar = {
-            if (currentRoute != "register" && currentRoute != "login") {
-                BottomBar(navController)
-            }
+            BottomBar(navController = navController, bars)
         }
     ){
-        Box(modifier = Modifier.padding(it).fillMaxSize()){
-            MyNavHost(navController = navController)
+        Box(modifier = Modifier
+            .padding(it)
+            .fillMaxSize()){
+            MyNavHost(navController = navController, dataStore, bars)
         }
 
     }

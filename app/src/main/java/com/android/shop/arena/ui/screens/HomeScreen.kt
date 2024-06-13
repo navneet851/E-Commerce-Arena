@@ -38,7 +38,7 @@ import com.android.shop.arena.ui.theme.CardColor
 @Composable
 fun HomeScreen() {
     LazyVerticalGrid(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(8.dp, 0.dp),
         columns = GridCells.Fixed(2)
     ) {
         items(10) {

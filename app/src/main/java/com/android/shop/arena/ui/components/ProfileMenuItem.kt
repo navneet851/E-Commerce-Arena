@@ -1,6 +1,7 @@
 package com.android.shop.arena.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,20 +26,23 @@ import com.android.shop.arena.ui.theme.CardColor
 
 
 @Composable
-fun ProfileMenuItem(icon: Int, title: String) {
+fun ProfileMenuItem(icon: Int, title: String, onClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .height(70.dp)
-            .padding(10.dp)
+            .height(65.dp)
+            .padding(8.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(CardColor)
             .padding(5.dp)
+            .clickable {
+                onClick()
+            }
     ) {
         Icon(
-            modifier = Modifier.size(35.dp),
+            modifier = Modifier.size(25.dp),
             tint = Color.Black,
             painter = painterResource(id = icon),
             contentDescription = title
@@ -47,11 +51,13 @@ fun ProfileMenuItem(icon: Int, title: String) {
         Text(
             color = Color.Black,
             text = title,
-            fontSize = 17.sp,
+            fontSize = 15.sp,
             modifier = Modifier.width(260.dp)
         )
 
         Icon(
+            modifier = Modifier.size(22.dp),
+            tint = Color.Black,
             painter = painterResource(id = R.drawable.baseline_arrow_forward_24),
             contentDescription = "open"
         )

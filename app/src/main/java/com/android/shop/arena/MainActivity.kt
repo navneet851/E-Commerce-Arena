@@ -4,19 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.android.shop.arena.ui.screens.RegisterScreen
+import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.theme.ArenaTheme
 
 class MainActivity : ComponentActivity() {
+
+    lateinit var dataStoreManager: DataStoreManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        dataStoreManager = DataStoreManager(this)
         enableEdgeToEdge()
         setContent {
             ArenaTheme {

@@ -1,9 +1,13 @@
 package com.android.shop.arena.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.screens.CartScreen
 import com.android.shop.arena.ui.screens.HomeScreen
 import com.android.shop.arena.ui.screens.LoginScreen
@@ -13,25 +17,41 @@ import com.android.shop.arena.ui.screens.StoreScreen
 
 
 @Composable
-fun MyNavHost(navController: NavHostController) {
+fun MyNavHost(
+    navController: NavHostController,
+    dataStore: DataStoreManager,
+    bars: MutableState<Boolean>
+) {
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    bars.value = currentRoute in listOf("home", "store", "cart", "profile")
+    
     NavHost(navController = navController, startDestination = "login"){
             composable("register") {
-                RegisterScreen(navController)
+                bars.value = false
+                RegisterScreen(navController, dataStore)
             }
             composable("login") {
-                LoginScreen(navController)
+                bars.value = false
+                LoginScreen(navController, dataStore)
             }
             composable("home") {
+                bars.value = true
                 HomeScreen()
             }
             composable("store") {
+                bars.value = true
                 StoreScreen()
             }
             composable("cart") {
+                bars.value = true
                 CartScreen()
             }
             composable("profile") {
-                ProfileScreen()
+                bars.value = true
+                ProfileScreen(navController, dataStore)
             }
     }
 }

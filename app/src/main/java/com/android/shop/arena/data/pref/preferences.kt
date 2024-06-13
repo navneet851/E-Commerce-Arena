@@ -1,4 +1,4 @@
-package com.android.shop.arena.data
+package com.android.shop.arena.data.pref
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -11,9 +11,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DataStoreManager(private val context: Context) {
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "MyDataStore")
+
 
     companion object {
+        val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "MyDataStore")
         val UID_KEY = stringPreferencesKey("uid_key")
     }
 
