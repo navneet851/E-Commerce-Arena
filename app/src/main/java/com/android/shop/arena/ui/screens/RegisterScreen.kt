@@ -26,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,19 +43,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.shop.arena.R
+import com.android.shop.arena.auth.addUser
 import com.android.shop.arena.auth.checkPhoneNumberInDatabase
 import com.android.shop.arena.auth.onLoginClicked
 import com.android.shop.arena.auth.storedVerificationId
 import com.android.shop.arena.auth.verifyPhoneNumberWithCode
+import com.android.shop.arena.data.DataStoreManager
 import com.android.shop.arena.ui.components.InputField
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.components.PasswordInputField
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.theme.InputColor
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(navController: NavHostController) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val dataStoreManager = DataStoreManager(LocalContext.current)
 
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -256,7 +262,14 @@ fun RegisterScreen(navController: NavHostController) {
                                 }
                                 else{
                                     val user = User(it, name, phoneNumber, password)
-                                    addUser(user)
+                                    addUser(user){
+
+                                        val token = it
+
+                                        coroutineScope.launch {
+                                            dataStoreManager.saveUID(token)
+                                        }
+                                    }
                                     navController.navigate("home")
                                     isDialogVisible = false
                                 }
@@ -274,18 +287,7 @@ fun RegisterScreen(navController: NavHostController) {
     }
 }
 
-fun addUser(user : User){
-    val db = FirebaseFirestore.getInstance()
-    db.collection("users")
-        .document(user.phone)
-        .set(user)
-        .addOnSuccessListener {
-            Log.d("Firestore", "User successfully written!")
-        }
-        .addOnFailureListener { e ->
-            Log.w("Firestore", "Error writing user", e)
-        }
-}
+
 
 
 

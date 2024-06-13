@@ -3,7 +3,10 @@ package com.android.shop.arena.auth
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import com.android.shop.arena.ui.screens.User
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.tasks.await
 
 fun checkPhoneNumberInDatabase(phoneNumber: String, isPresent : (Boolean) -> Unit) {
     val db = FirebaseFirestore.getInstance()
@@ -59,4 +62,33 @@ fun checkUserCredentialsInDatabase(phoneNumber: String, password: String, onSucc
             // There was an error checking the database
             Log.w("Firestore", "Error checking database for user credentials", e)
         }
+}
+
+
+fun addUser(user : User, onSuccess : () -> Unit){
+    val db = FirebaseFirestore.getInstance()
+    db.collection("users")
+        .document(user.phone)
+        .set(user)
+        .addOnSuccessListener {
+            Log.d("Firestore", "User successfully written!")
+            onSuccess()
+        }
+        .addOnFailureListener { e ->
+            Log.w("Firestore", "Error writing user", e)
+        }
+}
+
+suspend fun fetchUserByUID(uid: String): QuerySnapshot? {
+    val db = FirebaseFirestore.getInstance()
+
+    return try {
+        db.collection("users")
+            .whereEqualTo("uid", uid)
+            .get()
+            .await()
+    } catch (e: Exception) {
+        Log.d("fetchUserByUID", "Error getting documents: ", e)
+        null
+    }
 }

@@ -42,10 +42,15 @@ import com.android.shop.arena.auth.checkUserCredentialsInDatabase
 import com.android.shop.arena.auth.onLoginClicked
 import com.android.shop.arena.auth.storedVerificationId
 import com.android.shop.arena.auth.verifyPhoneNumberWithCode
+import com.android.shop.arena.data.DataStoreManager
 import com.android.shop.arena.ui.components.InputField
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.components.PasswordInputField
 import com.android.shop.arena.ui.theme.InputColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -61,6 +66,9 @@ fun LoginScreen(navController: NavHostController) {
     var notExist by remember {
         mutableStateOf(false)
     }
+
+    val dataStoreManager = DataStoreManager(context)
+
     LaunchedEffect(key1 = phoneNumber) {
         if (phoneNumber.length == 10){
             checkPhoneNumberInDatabase(phoneNumber){
@@ -210,6 +218,8 @@ fun LoginScreen(navController: NavHostController) {
                         Toast.makeText(context, "Register First", Toast.LENGTH_SHORT).show()
                     }
                     else{
+
+                        //login with password
                         if(loginWithPass){
                             if (password.isBlank() && phoneNumber.isBlank()){
                                 Toast.makeText(context, "Enter Valid Details!", Toast.LENGTH_SHORT).show()
@@ -218,6 +228,12 @@ fun LoginScreen(navController: NavHostController) {
                             else{
                                 checkUserCredentialsInDatabase(phoneNumber = phoneNumber, password = password){
                                     if(it){
+//                                        CoroutineScope(Dispatchers.Main).launch {
+//                                            val token = it
+//                                            dataStoreManager.saveUID(token)
+//                                            navController.navigate("home")
+//                                            otpRequestProgressed = true
+//                                        }
                                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                                         navController.navigate("home")
                                     }
@@ -229,6 +245,7 @@ fun LoginScreen(navController: NavHostController) {
 
                         }
                         else{
+                            //login with otp
                             if (otp.isBlank() || otp.length < 6 || otp.length > 6){
                                 Toast.makeText(context, "Enter Six Digit Number", Toast.LENGTH_SHORT).show()
                             }
@@ -239,9 +256,18 @@ fun LoginScreen(navController: NavHostController) {
                                         otpRequestProgressed = true
                                     }
                                     else{
-                                        navController.navigate("home")
-                                        otpRequestProgressed = true
 
+
+
+//                                        navController.navigate("home")
+//                                        otpRequestProgressed = true
+
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            val token = it
+                                            dataStoreManager.saveUID(token)
+                                            navController.navigate("home")
+                                            otpRequestProgressed = true
+                                        }
 
 
                                     }

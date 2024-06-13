@@ -76,7 +76,7 @@ private fun signInWithPhoneAuthCredential(context: Context, credential: PhoneAut
                     // Sign in success, update UI with the signed-in user's information
                     val user = task.result?.user?.uid
                     onSuccess(user!!)
-                    Toast.makeText(context,"logged in", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,"Success", Toast.LENGTH_SHORT).show()
                     Log.d("Firebase","logged in $user")
 
                 } else {
