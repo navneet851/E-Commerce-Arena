@@ -40,11 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.shop.arena.R
-import com.android.shop.arena.auth.addUser
-import com.android.shop.arena.auth.checkPhoneNumberInDatabase
-import com.android.shop.arena.auth.onLoginClicked
-import com.android.shop.arena.auth.storedVerificationId
-import com.android.shop.arena.auth.verifyPhoneNumberWithCode
+import com.android.shop.arena.api.auth.addUser
+import com.android.shop.arena.api.auth.checkPhoneNumberInDatabase
+import com.android.shop.arena.api.auth.onLoginClicked
+import com.android.shop.arena.api.auth.storedVerificationId
+import com.android.shop.arena.api.auth.verifyPhoneNumberWithCode
+import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.InputField
 import com.android.shop.arena.ui.components.Loader
@@ -110,11 +111,11 @@ fun RegisterScreen(navController: NavHostController, dataStore: DataStoreManager
     Text(
         text = "Skip",
         fontSize = 13.sp,
-        color = Color.White,
+        color = Color.Green,
         textAlign = TextAlign.Right,
         textDecoration = TextDecoration.Underline,
         modifier = Modifier
-            .padding(16.dp, 10.dp)
+            .padding(20.dp, 40.dp)
             .fillMaxWidth()
             .clickable {
                 navController.navigate("home")
@@ -290,9 +291,4 @@ fun RegisterScreen(navController: NavHostController, dataStore: DataStoreManager
 
 
 
-data class User(
-    val uid: String,
-    val name: String,
-    val phone: String,
-    val password: String
-)
+

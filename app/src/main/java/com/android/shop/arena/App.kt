@@ -3,7 +3,6 @@ package com.android.shop.arena
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -63,9 +62,9 @@ fun App(modifier: Modifier = Modifier) {
         }
     ){
         Box(modifier = Modifier
-            .padding(it)
+            //.padding(it)
             .fillMaxSize()){
-            MyNavHost(navController = navController, dataStore, bars)
+            MyNavHost(navController = navController, dataStore, bars, it)
         }
 
     }

@@ -1,11 +1,15 @@
-package com.android.shop.arena.auth
+package com.android.shop.arena.api.auth
 
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
-import com.android.shop.arena.ui.screens.User
+import com.android.shop.arena.data.entity.User
+import com.android.shop.arena.data.pref.DataStoreManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 fun checkPhoneNumberInDatabase(phoneNumber: String, isPresent : (Boolean) -> Unit) {
@@ -32,7 +36,7 @@ fun checkPhoneNumberInDatabase(phoneNumber: String, isPresent : (Boolean) -> Uni
 
 
 //Login
-fun checkUserCredentialsInDatabase(phoneNumber: String, password: String, onSuccess : (Boolean) -> Unit) {
+fun checkUserCredentialsInDatabase(phoneNumber: String, password: String, dataStore: DataStoreManager, onSuccess : (Boolean) -> Unit) {
     val db = FirebaseFirestore.getInstance()
     db.collection("users")
         .document(phoneNumber)
@@ -45,7 +49,13 @@ fun checkUserCredentialsInDatabase(phoneNumber: String, password: String, onSucc
                     if (docPassword == password) {
                         // The password matches
                         Log.d("Firestore", "User credentials are correct")
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val token = document.getString("uid")!!
+                            Log.d("Firestore", "Token: $token")
+                            dataStore.saveUID(token)
+                        }
                         onSuccess(true)
+
                     } else {
                         // The password does not match
                         Log.d("Firestore", "Incorrect password")

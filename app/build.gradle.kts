@@ -90,5 +90,8 @@ dependencies {
     //coroutines
     implementation(libs.kotlinx.coroutines.android)
 
+    //flows
+    implementation(libs.kotlinx.coroutines.core)
+
 
 }

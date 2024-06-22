@@ -1,5 +1,6 @@
 package com.android.shop.arena.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -20,7 +21,8 @@ import com.android.shop.arena.ui.screens.StoreScreen
 fun MyNavHost(
     navController: NavHostController,
     dataStore: DataStoreManager,
-    bars: MutableState<Boolean>
+    bars: MutableState<Boolean>,
+    paddingValues: PaddingValues
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -39,19 +41,19 @@ fun MyNavHost(
             }
             composable("home") {
                 bars.value = true
-                HomeScreen()
+                HomeScreen(paddingValues)
             }
             composable("store") {
                 bars.value = true
-                StoreScreen()
+                StoreScreen(paddingValues)
             }
             composable("cart") {
                 bars.value = true
-                CartScreen()
+                CartScreen(paddingValues)
             }
             composable("profile") {
                 bars.value = true
-                ProfileScreen(navController, dataStore)
+                ProfileScreen(navController, dataStore, paddingValues)
             }
     }
 }

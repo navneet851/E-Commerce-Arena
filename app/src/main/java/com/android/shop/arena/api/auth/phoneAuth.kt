@@ -1,4 +1,4 @@
-package com.android.shop.arena.auth
+package com.android.shop.arena.api.auth
 
 import android.app.Activity
 import android.content.Context

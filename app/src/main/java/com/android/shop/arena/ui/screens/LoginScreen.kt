@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,11 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.android.shop.arena.R
-import com.android.shop.arena.auth.checkPhoneNumberInDatabase
-import com.android.shop.arena.auth.checkUserCredentialsInDatabase
-import com.android.shop.arena.auth.onLoginClicked
-import com.android.shop.arena.auth.storedVerificationId
-import com.android.shop.arena.auth.verifyPhoneNumberWithCode
+import com.android.shop.arena.api.auth.checkPhoneNumberInDatabase
+import com.android.shop.arena.api.auth.checkUserCredentialsInDatabase
+import com.android.shop.arena.api.auth.onLoginClicked
+import com.android.shop.arena.api.auth.storedVerificationId
+import com.android.shop.arena.api.auth.verifyPhoneNumberWithCode
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.InputField
 import com.android.shop.arena.ui.components.Loader
@@ -95,11 +96,11 @@ fun LoginScreen(navController: NavHostController, dataStore: DataStoreManager) {
     Text(
         text = "Skip",
         fontSize = 13.sp,
-        color = Color.White,
+        color = Color.Green,
         textAlign = TextAlign.Right,
         textDecoration = TextDecoration.Underline,
         modifier = Modifier
-            .padding(16.dp, 10.dp)
+            .padding(20.dp, 40.dp)
             .fillMaxWidth()
             .clickable {
                 navController.navigate("home")
@@ -222,14 +223,8 @@ fun LoginScreen(navController: NavHostController, dataStore: DataStoreManager) {
 
                             }
                             else{
-                                checkUserCredentialsInDatabase(phoneNumber = phoneNumber, password = password){
+                                checkUserCredentialsInDatabase(phoneNumber = phoneNumber, password = password, dataStore){
                                     if(it){
-//                                        CoroutineScope(Dispatchers.Main).launch {
-//                                            val token = it
-//                                            dataStoreManager.saveUID(token)
-//                                            navController.navigate("home")
-//                                            otpRequestProgressed = true
-//                                        }
                                         Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                                         navController.navigate("home")
                                     }
