@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,6 +33,16 @@ import com.android.shop.arena.R
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.ProfileMenuItem
 import com.android.shop.arena.ui.theme.InputColor
+import com.android.shop.arena.ui.viewmodel.SharedViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.android.shop.arena.api.auth.fetchUserByUID
+import com.android.shop.arena.data.entity.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 
@@ -41,11 +52,19 @@ fun ProfileScreen(
     dataStore: DataStoreManager,
     paddingValues: PaddingValues
 ) {
+    val profileViewModel = SharedViewModel()
 
     val uid by dataStore.uidFlow.collectAsState(initial = "")
     val coroutineScope = rememberCoroutineScope()
 
-    if (uid == null){
+    var user by remember {
+        mutableStateOf(false)
+    }
+
+
+
+
+    if (uid == null || !user){
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -72,17 +91,28 @@ fun ProfileScreen(
         }
     }
     else{
+        var userDetails by remember {
+            mutableStateOf(User())
+        }
+        //val userDetails by profileViewModel.fetchUserByUID(uid!!).collectAsState(initial = null)
+        LaunchedEffect(key1 = true) {
+            delay(3000)
+            userDetails = fetchUserByUID(uid!!)
+            user = true
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(Color.White)
         ) {
+
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp)
+                    .height(290.dp)
                     .padding(10.dp)
                     .clip(shape = RoundedCornerShape(10))
                     .background(InputColor)
@@ -93,6 +123,7 @@ fun ProfileScreen(
                         .clip(shape = RoundedCornerShape(50)),
                     painter = painterResource(id = R.drawable.arena_logo),
                     contentDescription = "profile image")
+                Text(text = userDetails?.name ?: "null")
 
             }
 
@@ -107,10 +138,10 @@ fun ProfileScreen(
                     .padding(5.dp, 10.dp)
             ){
                 Text(
-                    text = uid ?: "null",
-                    modifier = Modifier.width(200.dp), // Define a width for the Text composable
-                    overflow = TextOverflow.Clip, // Clip the overflowed text
-                    maxLines = Int.MAX_VALUE // Allow the text to use as many lines as needed
+                    text = userDetails.phone ?: "null",
+                    modifier = Modifier.width(200.dp),
+                    overflow = TextOverflow.Clip,
+                    maxLines = Int.MAX_VALUE
                 )
                 ProfileMenuItem(icon = R.drawable.baseline_list_alt_24, title = "My Details"){}
                 ProfileMenuItem(icon = R.drawable.baseline_wb_shade_24, title = "My Orders"){}

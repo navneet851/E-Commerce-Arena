@@ -7,6 +7,7 @@ import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -89,16 +90,12 @@ fun addUser(user : User, onSuccess : () -> Unit){
         }
 }
 
-suspend fun fetchUserByUID(uid: String): QuerySnapshot? {
+suspend fun fetchUserByUID(uid: String): User {
     val db = FirebaseFirestore.getInstance()
-
-    return try {
-        db.collection("users")
+        val user = db.collection("users")
             .whereEqualTo("uid", uid)
             .get()
             .await()
-    } catch (e: Exception) {
-        Log.d("fetchUserByUID", "Error getting documents: ", e)
-        null
-    }
+            .toObjects(User::class.java)
+        return user[0] as User
 }
