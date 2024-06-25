@@ -56,6 +56,9 @@ fun CartScreen() {
                     contentDescription = "")
 
                 Column(
+                    modifier = Modifier
+                        .height(160.dp)
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
@@ -65,7 +68,6 @@ fun CartScreen() {
                         textAlign = TextAlign.Left,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp, 8.dp, 0.dp, 0.dp)
                     )
                     Text(
                         text = "Action",
@@ -74,7 +76,6 @@ fun CartScreen() {
                         fontSize = 12.sp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp, 0.dp)
                     )
                     Text(
                         text = "sold by: jfnf",
@@ -83,40 +84,42 @@ fun CartScreen() {
                         fontSize = 12.sp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp, 0.dp)
                     )
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .padding(10.dp)
-                            .width(80.dp)
+                            .width(100.dp)
                             .height(28.dp)
-                            .clip(RoundedCornerShape(6.dp))
+                            .clip(RoundedCornerShape(7.dp))
                             .background(Color(0xFFEAFFEE))
-                            .padding(6.dp)
+                            .padding(8.dp, 0.dp)
                     ) {
                         Icon(
+                            modifier = Modifier.size(17.dp),
                             painter = painterResource(id = R.drawable.minus),
                             tint = Color(0xFF66DD7A),
                             contentDescription = "")
                         Text(text = "1")
                         Icon(
+                            modifier = Modifier.size(16.dp),
                             painter = painterResource(id = R.drawable.plus),
                             tint = Color(0xFF66DD7A),
                             contentDescription = "")
                     }
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .padding(10.dp)
-                            .width(80.dp)
+                            .padding(5.dp)
+                            .width(130.dp)
                             .height(28.dp)
                     ) {
                         Text(text = "5,999")
                         Text(
+
                             color = Color.Gray,
                             text = "7,599",
                             textDecoration = TextDecoration.LineThrough
