@@ -49,7 +49,7 @@ fun MyNavHost(
             }
             composable("cart") {
                 bars.value = true
-                CartScreen()
+                CartScreen(paddingValues)
             }
             composable("profile") {
                 bars.value = true
