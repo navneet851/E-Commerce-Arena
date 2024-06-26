@@ -31,7 +31,7 @@ fun MyNavHost(
 
     bars.value = currentRoute in listOf("home", "store", "cart", "profile")
     
-    NavHost(navController = navController, startDestination = "login"){
+    NavHost(navController = navController, startDestination = "home"){
             composable("register") {
                 bars.value = false
                 RegisterScreen(navController, dataStore)

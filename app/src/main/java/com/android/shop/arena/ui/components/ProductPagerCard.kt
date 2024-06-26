@@ -1,5 +1,6 @@
 package com.android.shop.arena.ui.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,7 @@ import com.android.shop.arena.ui.theme.CardColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductPagerCard(modifier: Modifier = Modifier, product: ProductPager) {
     Card(
