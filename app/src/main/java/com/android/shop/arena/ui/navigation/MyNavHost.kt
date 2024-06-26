@@ -12,6 +12,7 @@ import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.screens.CartScreen
 import com.android.shop.arena.ui.screens.HomeScreen
 import com.android.shop.arena.ui.screens.LoginScreen
+import com.android.shop.arena.ui.screens.ProductScreen
 import com.android.shop.arena.ui.screens.ProfileScreen
 import com.android.shop.arena.ui.screens.RegisterScreen
 import com.android.shop.arena.ui.screens.StoreScreen
@@ -41,7 +42,7 @@ fun MyNavHost(
             }
             composable("home") {
                 bars.value = true
-                HomeScreen(paddingValues)
+                HomeScreen(paddingValues, navController)
             }
             composable("store") {
                 bars.value = true
@@ -51,10 +52,15 @@ fun MyNavHost(
                 bars.value = true
                 CartScreen(paddingValues)
             }
+            composable("product") {
+                bars.value = false
+                ProductScreen()
+            }
             composable("profile") {
                 bars.value = true
                 ProfileScreen(navController, dataStore, paddingValues)
             }
+
     }
 }
 

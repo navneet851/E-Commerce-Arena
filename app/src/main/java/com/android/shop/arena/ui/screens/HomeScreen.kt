@@ -10,12 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.android.shop.arena.R
 import com.android.shop.arena.ui.components.ProductCard
 
 
 @Composable
-fun HomeScreen(paddingValues: PaddingValues) {
+fun HomeScreen(paddingValues: PaddingValues, navController: NavController) {
     Box(
         modifier = Modifier
             .padding(paddingValues)
@@ -30,7 +31,9 @@ fun HomeScreen(paddingValues: PaddingValues) {
                 ProductCard(
                     modifier = Modifier.size(160.dp),
                     product = Product(imageResource = R.drawable.gta5_cover, title = "Grand Theft Auto V", description = "description", category = "Action")
-                )
+                ){
+                    navController.navigate("product")
+                }
             }
 
         }

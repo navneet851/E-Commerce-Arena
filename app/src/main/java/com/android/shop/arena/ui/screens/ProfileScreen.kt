@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.android.shop.arena.api.auth.fetchUserByUID
 import com.android.shop.arena.data.entity.User
+import com.android.shop.arena.ui.components.Loader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.job
@@ -58,13 +59,13 @@ fun ProfileScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var user by remember {
-        mutableStateOf(false)
+        mutableStateOf<User?>(null)
     }
 
 
 
 
-    if (uid == null || !user){
+    if (uid == null){
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -91,15 +92,7 @@ fun ProfileScreen(
         }
     }
     else{
-        var userDetails by remember {
-            mutableStateOf(User())
-        }
-        //val userDetails by profileViewModel.fetchUserByUID(uid!!).collectAsState(initial = null)
-        LaunchedEffect(key1 = true) {
-            delay(3000)
-            userDetails = fetchUserByUID(uid!!)
-            user = true
-        }
+
 
         Column(
             modifier = Modifier
@@ -108,49 +101,62 @@ fun ProfileScreen(
                 .background(Color.White)
         ) {
 
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(290.dp)
-                    .padding(10.dp)
-                    .clip(shape = RoundedCornerShape(10))
-                    .background(InputColor)
-            ){
-                Image(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(shape = RoundedCornerShape(50)),
-                    painter = painterResource(id = R.drawable.arena_logo),
-                    contentDescription = "profile image")
-                Text(text = userDetails?.name ?: "null")
-
+            LaunchedEffect(uid) {
+                val userSnapshot = fetchUserByUID(uid!!)
+                user = userSnapshot
             }
 
-            Column(
+            if (user == null){
+                Loader()
+            }
+            else{
 
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(10.dp, 0.dp)
-                    .clip(shape = RoundedCornerShape(5))
-                    .background(InputColor)
-                    .padding(5.dp, 10.dp)
-            ){
-                Text(
-                    text = userDetails.phone ?: "null",
-                    modifier = Modifier.width(200.dp),
-                    overflow = TextOverflow.Clip,
-                    maxLines = Int.MAX_VALUE
-                )
-                ProfileMenuItem(icon = R.drawable.baseline_list_alt_24, title = "My Details"){}
-                ProfileMenuItem(icon = R.drawable.baseline_wb_shade_24, title = "My Orders"){}
-                ProfileMenuItem(icon = R.drawable.baseline_logout_24, title = "Logout"){
-                    coroutineScope.launch {
-                        dataStore.deleteUID()
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(290.dp)
+                        .padding(10.dp)
+                        .clip(shape = RoundedCornerShape(10))
+                        .background(InputColor)
+                ){
+                    Image(
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clip(shape = RoundedCornerShape(50)),
+                        painter = painterResource(id = R.drawable.arena_logo),
+                        contentDescription = "profile image")
+                    Text(text = user!!.name)
+
+                }
+
+                Column(
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(10.dp, 0.dp)
+                        .clip(shape = RoundedCornerShape(5))
+                        .background(InputColor)
+                        .padding(5.dp, 10.dp)
+                ){
+                    Text(
+                        text = user!!.phone,
+                        modifier = Modifier.width(200.dp),
+                        overflow = TextOverflow.Clip,
+                        maxLines = Int.MAX_VALUE
+                    )
+                    ProfileMenuItem(icon = R.drawable.baseline_list_alt_24, title = "My Details"){}
+                    ProfileMenuItem(icon = R.drawable.baseline_wb_shade_24, title = "My Orders"){}
+                    ProfileMenuItem(icon = R.drawable.baseline_logout_24, title = "Logout"){
+                        coroutineScope.launch {
+                            dataStore.deleteUID()
+                        }
                     }
                 }
+
             }
+
 
         }
     }

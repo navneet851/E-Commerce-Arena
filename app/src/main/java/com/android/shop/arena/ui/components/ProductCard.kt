@@ -2,6 +2,7 @@ package com.android.shop.arena.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,7 @@ import com.android.shop.arena.ui.screens.Product
 import com.android.shop.arena.ui.theme.CardColor
 
 @Composable
-fun ProductCard(modifier: Modifier = Modifier, product: Product) {
+fun ProductCard(modifier: Modifier = Modifier, product: Product, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,6 +39,9 @@ fun ProductCard(modifier: Modifier = Modifier, product: Product) {
             modifier = Modifier
                 .background(CardColor)
                 .padding(5.dp)
+                .clickable {
+                    onClick()
+                }
         ) {
             Image(
                 painter = painterResource(id = product.imageResource),
