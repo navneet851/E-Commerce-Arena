@@ -35,7 +35,7 @@ fun ProfileMenuItem(icon: Int, title: String, onClick: () -> Unit) {
             .height(65.dp)
             .padding(8.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(CardColor)
+            .background(Color.White)
             .padding(5.dp)
             .clickable {
                 onClick()

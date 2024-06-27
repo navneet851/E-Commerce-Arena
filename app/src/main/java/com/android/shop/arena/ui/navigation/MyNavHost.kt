@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.toRoute
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.screens.CartScreen
 import com.android.shop.arena.ui.screens.HomeScreen
@@ -16,6 +17,7 @@ import com.android.shop.arena.ui.screens.ProductScreen
 import com.android.shop.arena.ui.screens.ProfileScreen
 import com.android.shop.arena.ui.screens.RegisterScreen
 import com.android.shop.arena.ui.screens.StoreScreen
+import kotlinx.serialization.Serializable
 
 
 @Composable
@@ -52,9 +54,10 @@ fun MyNavHost(
                 bars.value = true
                 CartScreen(paddingValues)
             }
-            composable("product") {
+            composable<Product> {
+                val product : Product = it.toRoute()
                 bars.value = false
-                ProductScreen()
+                ProductScreen(product.id, navController)
             }
             composable("profile") {
                 bars.value = true
@@ -62,9 +65,12 @@ fun MyNavHost(
             }
 
     }
+
+
 }
 
-
+@Serializable
+data class Product(val id : Int)
 
 
 

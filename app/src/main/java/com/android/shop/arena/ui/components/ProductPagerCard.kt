@@ -35,7 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.shop.arena.ui.screens.Product
 import com.android.shop.arena.ui.screens.ProductPager
 import com.android.shop.arena.ui.theme.CardColor
 import kotlinx.coroutines.delay

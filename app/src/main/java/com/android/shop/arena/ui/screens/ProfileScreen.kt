@@ -3,6 +3,7 @@ package com.android.shop.arena.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,9 +39,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.shop.arena.api.auth.fetchUserByUID
 import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.ui.components.Loader
+import com.android.shop.arena.ui.theme.CardColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.job
@@ -53,7 +58,7 @@ fun ProfileScreen(
     dataStore: DataStoreManager,
     paddingValues: PaddingValues
 ) {
-    val profileViewModel = SharedViewModel()
+    val profileViewModel : SharedViewModel = viewModel()
 
     val uid by dataStore.uidFlow.collectAsState(initial = "")
     val coroutineScope = rememberCoroutineScope()
@@ -118,15 +123,21 @@ fun ProfileScreen(
                         .height(290.dp)
                         .padding(10.dp)
                         .clip(shape = RoundedCornerShape(10))
-                        .background(InputColor)
+                        .background(CardColor)
                 ){
-                    Image(
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(shape = RoundedCornerShape(50)),
-                        painter = painterResource(id = R.drawable.arena_logo),
-                        contentDescription = "profile image")
-                    Text(text = user!!.name)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ){
+                        Image(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .size(150.dp)
+                                .clip(shape = RoundedCornerShape(50)),
+                            painter = painterResource(id = R.drawable.arena_logo),
+                            contentDescription = "profile image")
+                        Text(text = user!!.name, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                    }
+
 
                 }
 
@@ -137,15 +148,10 @@ fun ProfileScreen(
                         .fillMaxHeight()
                         .padding(10.dp, 0.dp)
                         .clip(shape = RoundedCornerShape(5))
-                        .background(InputColor)
+                        .background(CardColor)
                         .padding(5.dp, 10.dp)
                 ){
-                    Text(
-                        text = user!!.phone,
-                        modifier = Modifier.width(200.dp),
-                        overflow = TextOverflow.Clip,
-                        maxLines = Int.MAX_VALUE
-                    )
+
                     ProfileMenuItem(icon = R.drawable.baseline_list_alt_24, title = "My Details"){}
                     ProfileMenuItem(icon = R.drawable.baseline_wb_shade_24, title = "My Orders"){}
                     ProfileMenuItem(icon = R.drawable.baseline_logout_24, title = "Logout"){

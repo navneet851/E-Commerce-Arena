@@ -22,11 +22,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.shop.arena.ui.screens.Product
+import com.android.shop.arena.data.entity.Game
 import com.android.shop.arena.ui.theme.CardColor
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ProductCard(modifier: Modifier = Modifier, product: Product, onClick: () -> Unit) {
+fun ProductCard(modifier: Modifier = Modifier, game : Game, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,8 +46,8 @@ fun ProductCard(modifier: Modifier = Modifier, product: Product, onClick: () -> 
                     onClick()
                 }
         ) {
-            Image(
-                painter = painterResource(id = product.imageResource),
+            GlideImage(
+                model = game.coverUri,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = modifier
@@ -53,7 +56,7 @@ fun ProductCard(modifier: Modifier = Modifier, product: Product, onClick: () -> 
             )
 
             Text(
-                text = "Action",
+                text = game.category,
                 color = Color(0xFF4848AA),
                 textAlign = TextAlign.Left,
                 fontSize = 12.sp,
@@ -63,7 +66,7 @@ fun ProductCard(modifier: Modifier = Modifier, product: Product, onClick: () -> 
 
 
             Text(
-                text = product.title,
+                text = game.name,
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Left,

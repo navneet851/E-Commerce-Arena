@@ -8,6 +8,7 @@ import com.android.shop.arena.api.Api
 import com.android.shop.arena.data.entity.Game
 import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.data.pref.DataStoreManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,7 @@ class SharedViewModel() : ViewModel(){
         getGames()
     }
 
-    private fun getGames() = viewModelScope.launch {
+    private fun getGames() = viewModelScope.launch(Dispatchers.IO) {
        api.getGames().collect{
            _games.value = it
        }

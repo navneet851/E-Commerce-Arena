@@ -75,7 +75,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     //Glide
-    implementation (libs.glide)
+    implementation(libs.compose)
+    annotationProcessor(libs.compiler)
 
     // Import the BoM for the Firebase platform
     implementation(platform(libs.firebase.bom))
