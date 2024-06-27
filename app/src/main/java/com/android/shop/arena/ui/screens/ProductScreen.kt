@@ -3,6 +3,7 @@ package com.android.shop.arena.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,7 +44,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -73,7 +76,10 @@ fun ProductScreen(id: Int, navController: NavHostController) {
                 ),
                 navigationIcon = {
                     Icon(
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
                             navController.navigateUp()
                         },
                         painter = painterResource(id = R.drawable.baseline_arrow_back_24),
@@ -141,6 +147,17 @@ fun ProductScreen(id: Int, navController: NavHostController) {
                         modifier = Modifier
                             .fillMaxWidth()
                     )
+
+                    Row(
+                        modifier = Modifier.padding(0.dp, 10.dp)
+                    ) {
+                        Text(text = "MRP  ", letterSpacing = 0.sp, fontSize = 18.sp, color = Color.Gray)
+                        Text(text = "₹${game.totalPrice}", textDecoration = TextDecoration.LineThrough, letterSpacing = 0.sp, fontSize = 18.sp, color = Color.Gray, fontWeight = FontWeight.Medium)
+                        Text(text = "  ₹${game.discountPrice}", letterSpacing = 0.sp, fontSize = 18.sp, color = Color.LightGray, fontWeight = FontWeight.Medium)
+                    }
+
+
+
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()

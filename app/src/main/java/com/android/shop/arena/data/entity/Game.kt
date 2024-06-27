@@ -8,7 +8,9 @@ class Game (
     val category : String,
     val soldBy : String,
     val support : List<String>,
-    val screenshots : List<String>
+    val screenshots : List<String>,
+    val totalPrice : String,
+    val discountPrice : String,
 ){
-    constructor() : this(-1, "", "", "", "", "", emptyList(), emptyList())
+    constructor() : this(-1, "", "", "", "", "", emptyList(), emptyList(), "", "")
 }

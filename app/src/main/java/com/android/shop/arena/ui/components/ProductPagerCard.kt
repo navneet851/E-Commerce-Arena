@@ -55,7 +55,7 @@ fun ProductPagerCard(modifier: Modifier = Modifier, product: ProductPager) {
             modifier = Modifier
                 .background(CardColor)
                 .padding(8.dp)
-        ) {
+        ){
 
             val pagerState = rememberPagerState {
                 product.pagerImg.size
