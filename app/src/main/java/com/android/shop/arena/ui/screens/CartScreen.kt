@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,16 +32,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.shop.arena.R
+import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.theme.CardColor
+import com.android.shop.arena.ui.viewmodel.SharedViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CartScreen(paddingValues: PaddingValues) {
+fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
+
+    val uid by dataStore.uidFlow.collectAsState(initial = "")
+
+    val cartViewModel : SharedViewModel = viewModel()
+    val cartItems by cartViewModel.cartItems.collectAsState()
+
     Scaffold(
         containerColor = Color.White,
         modifier = Modifier
@@ -90,7 +99,7 @@ fun CartScreen(paddingValues: PaddingValues) {
                 .padding(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
                 .fillMaxSize()
         ) {
-            items(8) {
+            items(cartItems.size) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

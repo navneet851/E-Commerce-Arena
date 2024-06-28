@@ -48,11 +48,11 @@ fun MyNavHost(
             }
             composable("store") {
                 bars.value = true
-                StoreScreen(paddingValues)
+                StoreScreen(paddingValues, navController)
             }
             composable("cart") {
                 bars.value = true
-                CartScreen(paddingValues)
+                CartScreen(paddingValues, dataStore)
             }
             composable<Product> {
                 val product : Product = it.toRoute()
@@ -71,6 +71,7 @@ fun MyNavHost(
 
 @Serializable
 data class Product(val id : Int)
+
 
 
 

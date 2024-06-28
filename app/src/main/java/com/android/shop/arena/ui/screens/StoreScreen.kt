@@ -4,45 +4,35 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.android.shop.arena.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.android.shop.arena.ui.components.ProductPagerCard
+import com.android.shop.arena.ui.navigation.Product
+import com.android.shop.arena.ui.viewmodel.SharedViewModel
 
 
 @Composable
-fun StoreScreen(paddingValues: PaddingValues) {
-    val productPagerImage = listOf(
-        R.drawable.gta5_slide,
-        R.drawable.gta5_slide1,
-        R.drawable.gta5_slide2,
-        R.drawable.gta5_slide3,
-        )
+fun StoreScreen(paddingValues: PaddingValues, navController: NavHostController) {
+
+    val storeViewModel : SharedViewModel = viewModel()
+    val games by storeViewModel.games.collectAsState()
 
 
     LazyColumn(
         modifier = Modifier.padding(paddingValues),
     ) {
-        items(5){
+        items(games.size){
             ProductPagerCard(
-                product = ProductPager(
-                    coverImg = R.drawable.gta5_cover,
-                    pagerImg = productPagerImage,
-                    title = "Grand Theft Auto V", price = 43433,
-                    discountPrice = 23434, category = "Action"
-                )
-            )
+                game = games.reversed()[it]
+            ){
+                navController.navigate(Product(games.reversed()[it].id))
+            }
         }
     }
 
 }
 
 
-data class ProductPager(
-    val coverImg: Int,
-    val pagerImg : List<Int>,
-    val title: String,
-    val price : Int,
-    val discountPrice : Int,
-    val category: String
-)

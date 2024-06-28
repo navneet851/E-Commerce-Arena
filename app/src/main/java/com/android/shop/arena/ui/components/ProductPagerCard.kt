@@ -3,6 +3,7 @@ package com.android.shop.arena.ui.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,14 +36,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.shop.arena.ui.screens.ProductPager
+import com.android.shop.arena.data.entity.Game
 import com.android.shop.arena.ui.theme.CardColor
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalGlideComposeApi::class)
 @Composable
-fun ProductPagerCard(modifier: Modifier = Modifier, product: ProductPager) {
+fun ProductPagerCard(modifier: Modifier = Modifier, game: Game, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,32 +58,36 @@ fun ProductPagerCard(modifier: Modifier = Modifier, product: ProductPager) {
             modifier = Modifier
                 .background(CardColor)
                 .padding(8.dp)
+                .clickable {
+                    onClick()
+                }
         ){
 
             val pagerState = rememberPagerState {
-                product.pagerImg.size
+                game.screenshots.size
             }
             val coroutineScope = rememberCoroutineScope()
 
             LaunchedEffect(key1 = pagerState) {
                 while (true){
                     delay(2000)
-                    val nextPage = (pagerState.currentPage + 1) % product.pagerImg.size
+                    val nextPage = (pagerState.currentPage + 1) % game.screenshots.size
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(nextPage)
                     }
                 }
             }
             HorizontalPager(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                modifier = Modifier.clip(RoundedCornerShape(20.dp)),
                 state = pagerState) {page ->
-                Image(
-                    painter = painterResource(id = product.pagerImg[page]),
+                GlideImage(
+                    model = game.screenshots[page],
                     contentDescription = null,
-                    contentScale = ContentScale.Inside,
+                    contentScale = ContentScale.Fit,
                     modifier = modifier
-                        .clip(RoundedCornerShape(5.dp))
+                        .clip(RoundedCornerShape(20.dp))
                         .fillMaxWidth()
+                        .height(205.dp)
                 )
             }
             Row(
@@ -115,7 +122,7 @@ fun ProductPagerCard(modifier: Modifier = Modifier, product: ProductPager) {
 
 
             Text(
-                text = product.title,
+                text = game.name,
                 color = Color.Black,
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Left,
@@ -129,13 +136,13 @@ fun ProductPagerCard(modifier: Modifier = Modifier, product: ProductPager) {
                 modifier = Modifier.fillMaxWidth().padding(5.dp, 0.dp)
             ) {
                 Text(
-                    text = "Rs:${product.price.toString()}",
+                    text = "Rs:${game.totalPrice}",
                     color = Color.Gray,
                     textDecoration = TextDecoration.LineThrough
                 )
                 Spacer(modifier = Modifier.width(30.dp))
                 Text(
-                    text = "Rs:${product.discountPrice.toString()}",
+                    text = "Rs:${game.discountPrice}",
                     color = Color.Black,
                 )
 

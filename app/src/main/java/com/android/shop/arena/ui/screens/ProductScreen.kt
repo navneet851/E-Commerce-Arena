@@ -157,7 +157,6 @@ fun ProductScreen(id: Int, navController: NavHostController) {
                     }
 
 
-
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -227,7 +226,7 @@ fun ProductScreen(id: Int, navController: NavHostController) {
                             model = game.screenshots[page],
                             loading = placeholder(R.drawable.landscape_placeholder),
                             contentDescription = "",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
