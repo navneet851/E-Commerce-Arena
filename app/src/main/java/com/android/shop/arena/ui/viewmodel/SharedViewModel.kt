@@ -1,6 +1,8 @@
 package com.android.shop.arena.ui.viewmodel
 
+import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -26,7 +28,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-class SharedViewModel : ViewModel(){
+class SharedViewModel(application: Application) : AndroidViewModel(application){
+    private val dataStoreManager = DataStoreManager(application)
 
 
     private val _games : MutableStateFlow<List<Game>> = MutableStateFlow(emptyList())
@@ -35,23 +38,28 @@ class SharedViewModel : ViewModel(){
     private val _cart : MutableStateFlow<List<Cart>> = MutableStateFlow(emptyList())
     val cartItems : StateFlow<List<Cart>> = _cart
 
-
-    private val api = Api()
+    private var api : Api? = null
 
     init {
-        getGames()
-        cartItems()
+        getUser()
     }
 
+    private fun getUser() = viewModelScope.launch(Dispatchers.IO) {
+        dataStoreManager.uidFlow.collect{ uid ->
+            api = Api(uid?: "")
+            getGames()
+            cartItems()
+        }
+    }
 
     private fun getGames() = viewModelScope.launch(Dispatchers.IO) {
-       api.getGames().collect{
+       api?.getGames()?.collect{
            _games.value = it
        }
     }
 
     private fun cartItems() = viewModelScope.launch(Dispatchers.IO) {
-        api.cartItems().collect{
+        api?.cartItems()?.collect{
             _cart.value = it
         }
     }

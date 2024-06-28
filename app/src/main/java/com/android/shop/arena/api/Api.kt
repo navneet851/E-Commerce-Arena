@@ -13,9 +13,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class Api() {
+class Api(private val uid : String) {
     private val firestore : FirebaseFirestore = Firebase.firestore
-
 
     suspend fun getGames() : Flow<List<Game>> {
         return flow{
@@ -31,7 +30,7 @@ class Api() {
         return flow{
             emit(emptyList<Cart>())
             val snapshot = firestore.collection("cart")
-                .whereEqualTo("uid", "")
+                .whereEqualTo("uid", uid)
                 .get().await()
             val cartItems = snapshot.toObjects(Cart::class.java)
             emit(cartItems)
