@@ -8,6 +8,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
@@ -38,6 +39,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private val _cart : MutableStateFlow<List<Cart>> = MutableStateFlow(emptyList())
     val cartItems : StateFlow<List<Cart>> = _cart
 
+    val userId : MutableState<String> = mutableStateOf("")
+
     private var api : Api? = null
 
     init {
@@ -46,7 +49,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
 
     private fun getUser() = viewModelScope.launch(Dispatchers.IO) {
         dataStoreManager.uidFlow.collect{ uid ->
-            api = Api(uid?: "")
+            userId.value = uid?: ""
+            api = Api(userId.value)
             getGames()
             cartItems()
         }

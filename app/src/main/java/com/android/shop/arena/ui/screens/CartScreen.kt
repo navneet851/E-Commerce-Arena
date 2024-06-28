@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.shop.arena.R
 import com.android.shop.arena.data.pref.DataStoreManager
+import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
 
@@ -45,156 +46,165 @@ import com.android.shop.arena.ui.viewmodel.SharedViewModel
 @Composable
 fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
 
-    val uid by dataStore.uidFlow.collectAsState(initial = "")
-
     val cartViewModel : SharedViewModel = viewModel()
+    val games by cartViewModel.games.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
+    val cartItemsDetails = games.filter { game ->
+        cartItems.any { cartItem -> cartItem.id == game.id }
+    }
 
-    Scaffold(
-        containerColor = Color.White,
-        modifier = Modifier
-            .padding(paddingValues),
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .background(Color(0xFFEAFFEE))
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 10.dp, 10.dp, 0.dp)
-                ){
-                    Text(text = "Total MRP", fontSize = 12.sp)
-                    Text(text = "₹ 10,000", fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 5.dp)
-                ){
-                    Text(text = "Shipping Fee", fontSize = 12.sp)
-                    Text(text = "FREE", fontSize = 12.sp, color = Color(0xFF05AF22))
-                }
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                    ,
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF05AF22),
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(6.dp)
-                ) {
-                    Text(text = "PLACE ORDER")
-                }
-            }
-        }
-    ) {
-        LazyColumn(
+    if (cartItemsDetails.isEmpty()) {
+        Loader()
+    }
+    else{
+        Scaffold(
+            containerColor = Color.White,
             modifier = Modifier
-                .padding(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
-                .fillMaxSize()
-        ) {
-            items(cartItems.size) {
-                Row(
+                .padding(paddingValues),
+            bottomBar = {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 5.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(CardColor)
+                        .background(Color(0xFFEAFFEE))
                 ) {
-                    Image(
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .size(160.dp)
-                            .padding(10.dp),
-                        painter = painterResource(id = R.drawable.gta5_cover),
-                        contentDescription = ""
-                    )
-
-                    Column(
+                            .fillMaxWidth()
+                            .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                    ){
+                        Text(text = "Total MRP", fontSize = 12.sp)
+                        Text(text = "₹ 10,000", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .height(160.dp)
-                            .padding(10.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
+                            .fillMaxWidth()
+                            .padding(10.dp, 5.dp)
+                    ){
+                        Text(text = "Shipping Fee", fontSize = 12.sp)
+                        Text(text = "FREE", fontSize = 12.sp, color = Color(0xFF05AF22))
+                    }
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                        ,
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF05AF22),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(6.dp)
                     ) {
-                        Text(
-                            text = "Gta 5",
-                            color = Color.Black,
-                            style = MaterialTheme.typography.titleMedium,
-                            textAlign = TextAlign.Left,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                        Text(
-                            text = "Action",
-                            color = Color(0xFF4848AA),
-                            textAlign = TextAlign.Left,
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-                        Text(
-                            text = "sold by: jfnf",
-                            color = Color.Gray,
-                            textAlign = TextAlign.Left,
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .width(100.dp)
-                                .height(28.dp)
-                                .clip(RoundedCornerShape(7.dp))
-                                .background(Color(0xFFEAFFEE))
-                                .padding(8.dp, 0.dp)
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(17.dp),
-                                painter = painterResource(id = R.drawable.minus),
-                                tint = Color(0xFF66DD7A),
-                                contentDescription = ""
-                            )
-                            Text(text = "1")
-                            Icon(
-                                modifier = Modifier.size(16.dp),
-                                painter = painterResource(id = R.drawable.plus),
-                                tint = Color(0xFF66DD7A),
-                                contentDescription = ""
-                            )
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .width(130.dp)
-                                .height(28.dp)
-                        ) {
-                            Text(text = "5,999")
-                            Text(
-
-                                color = Color.Gray,
-                                text = "7,599",
-                                textDecoration = TextDecoration.LineThrough
-                            )
-
-                        }
-
+                        Text(text = "PLACE ORDER")
                     }
                 }
+            }
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
+                    .fillMaxSize()
+            ) {
+                items(cartItems.size) { game ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp, 5.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(CardColor)
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(160.dp)
+                                .padding(10.dp),
+                            painter = painterResource(id = R.drawable.gta5_cover),
+                            contentDescription = ""
+                        )
 
+                        Column(
+                            modifier = Modifier
+                                .height(160.dp)
+                                .padding(10.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = cartItemsDetails[game].name,
+                                color = Color.Black,
+                                style = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Left,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                            Text(
+                                text = cartItemsDetails[game].category,
+                                color = Color(0xFF4848AA),
+                                textAlign = TextAlign.Left,
+                                fontSize = 12.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                            Text(
+                                text = "sold by: ${cartItemsDetails[game].soldBy}",
+                                color = Color.Gray,
+                                textAlign = TextAlign.Left,
+                                fontSize = 12.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(28.dp)
+                                    .clip(RoundedCornerShape(7.dp))
+                                    .background(Color(0xFFEAFFEE))
+                                    .padding(8.dp, 0.dp)
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(17.dp),
+                                    painter = painterResource(id = R.drawable.minus),
+                                    tint = Color(0xFF66DD7A),
+                                    contentDescription = ""
+                                )
+                                Text(text = cartItems[game].quantity.toString())
+                                Icon(
+                                    modifier = Modifier.size(16.dp),
+                                    painter = painterResource(id = R.drawable.plus),
+                                    tint = Color(0xFF66DD7A),
+                                    contentDescription = ""
+                                )
+                            }
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .width(130.dp)
+                                    .height(28.dp)
+                            ) {
+                                Text(text = cartItemsDetails[game].discountPrice)
+                                Text(
+
+                                    color = Color.Gray,
+                                    text = cartItemsDetails[game].totalPrice,
+                                    textDecoration = TextDecoration.LineThrough
+                                )
+
+                            }
+
+                        }
+                    }
+
+                }
             }
         }
     }
+
+
 }
 
 
