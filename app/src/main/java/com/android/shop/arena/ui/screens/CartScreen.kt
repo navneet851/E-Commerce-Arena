@@ -40,8 +40,11 @@ import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
@@ -114,11 +117,11 @@ fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
                             .clip(RoundedCornerShape(10.dp))
                             .background(CardColor)
                     ) {
-                        Image(
+                        GlideImage(
                             modifier = Modifier
                                 .size(160.dp)
                                 .padding(10.dp),
-                            painter = painterResource(id = R.drawable.gta5_cover),
+                            model = cartItemsDetails[game].coverUri,
                             contentDescription = ""
                         )
 

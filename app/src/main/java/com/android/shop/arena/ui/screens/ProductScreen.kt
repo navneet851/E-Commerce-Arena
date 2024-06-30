@@ -1,5 +1,6 @@
 package com.android.shop.arena.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,12 +52,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.android.shop.arena.api.addToCart
+import com.android.shop.arena.data.entity.Cart
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.Placeholder
 import com.bumptech.glide.integration.compose.placeholder
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
@@ -64,6 +70,9 @@ fun ProductScreen(id: Int, navController: NavHostController) {
 
     val productViewModel : SharedViewModel = viewModel()
     val games by productViewModel.games.collectAsState()
+    val cartItems by productViewModel.cartItems.collectAsState()
+    val uid = productViewModel.userId.value
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -90,12 +99,15 @@ fun ProductScreen(id: Int, navController: NavHostController) {
         }
     ) {
 
-        if (games.isEmpty()) {
+        if (games.isEmpty() || cartItems.isEmpty()) {
             Loader()
         }
         else{
             val game by remember {
                 mutableStateOf(games[id])
+            }
+            var addedToCart by remember {
+                mutableStateOf(cartItems.any { cartItem -> cartItem.id == game.id })
             }
             Column(
                 modifier = Modifier
@@ -162,14 +174,39 @@ fun ProductScreen(id: Int, navController: NavHostController) {
                             .fillMaxWidth()
                             .padding(10.dp)
                         ,
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            if (uid != "" && !addedToCart) {
+                                val item = Cart(game.id, 1, uid)
+                                addToCart(item){
+                                  addedToCart = true
+                                }
+                            }
+                            if(uid == ""){
+                                navController.navigate("login")
+                            }
+                        },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xCE05AF22),
-                            contentColor = Color.White
+                            containerColor =
+                            if (addedToCart){
+                                Color(0xCE02460D)
+                            }
+                            else{
+                                Color(0xCE05AF22)
+                                },
+                            contentColor =
+                            if (addedToCart){
+                                Color.Gray
+                            }
+                            else{
+                                Color.White
+                            }
                         ),
                         shape = RoundedCornerShape(6.dp)
                     ) {
-                        Text(text = "ADD TO CART")
+                        if (addedToCart)
+                            Text(text = "ADDED TO CART")
+                        else
+                            Text(text = "ADD TO CART")
                     }
 
                     Text(
