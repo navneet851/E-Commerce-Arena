@@ -3,6 +3,7 @@ package com.android.shop.arena.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,18 +41,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.shop.arena.R
+import com.android.shop.arena.api.removeCartItem
+import com.android.shop.arena.api.updateCartItemQuantity
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
+fun CartScreen(paddingValues: PaddingValues) {
 
     val cartViewModel : SharedViewModel = viewModel()
     val games by cartViewModel.games.collectAsState()
@@ -55,16 +65,28 @@ fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
     val cartItemsDetails = games.filter { game ->
         cartItems.any { cartItem -> cartItem.id == game.id }
     }
+    val uid = cartViewModel.userId.value
 
-    if (cartItemsDetails.isEmpty()) {
+
+    if (cartItemsDetails.isEmpty() || uid == "") {
         Loader()
     }
     else{
+
+
+
         Scaffold(
             containerColor = Color.White,
             modifier = Modifier
                 .padding(paddingValues),
             bottomBar = {
+
+                var totalAmount by remember { mutableIntStateOf(0) }
+
+                for (i in cartItemsDetails.indices){
+                    val amount = cartItemsDetails[i].discountPrice.replace(",", "").toInt()
+                    totalAmount += amount * cartItems[i].quantity
+                }
                 Column(
                     modifier = Modifier
                         .background(Color(0xFFEAFFEE))
@@ -76,7 +98,7 @@ fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
                             .padding(10.dp, 10.dp, 10.dp, 0.dp)
                     ){
                         Text(text = "Total MRP", fontSize = 12.sp)
-                        Text(text = "₹ 10,000", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                        Text(text = "₹ $totalAmount", fontSize = 13.sp, fontWeight = FontWeight.Medium)
                     }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -167,14 +189,34 @@ fun CartScreen(paddingValues: PaddingValues, dataStore: DataStoreManager) {
                                     .padding(8.dp, 0.dp)
                             ) {
                                 Icon(
-                                    modifier = Modifier.size(17.dp),
+                                    modifier = Modifier
+                                        .size(17.dp)
+                                        .clickable {
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                if (cartItems[game].quantity > 1){
+                                                    updateCartItemQuantity(cartItems[game].id, uid, cartItems[game].quantity -1)
+                                                }
+                                                else{
+                                                    removeCartItem(cartItems[game].id, uid)
+                                                }
+
+                                            }
+
+                                        },
                                     painter = painterResource(id = R.drawable.minus),
                                     tint = Color(0xFF66DD7A),
                                     contentDescription = ""
                                 )
                                 Text(text = cartItems[game].quantity.toString())
                                 Icon(
-                                    modifier = Modifier.size(16.dp),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clickable {
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                updateCartItemQuantity(cartItems[game].id, uid, cartItems[game].quantity + 1)
+                                            }
+
+                                        },
                                     painter = painterResource(id = R.drawable.plus),
                                     tint = Color(0xFF66DD7A),
                                     contentDescription = ""
