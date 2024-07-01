@@ -99,7 +99,7 @@ fun ProductScreen(id: Int, navController: NavHostController) {
         }
     ) {
 
-        if (games.isEmpty() || cartItems.isEmpty()) {
+        if (games.isEmpty()) {
             Loader()
         }
         else{

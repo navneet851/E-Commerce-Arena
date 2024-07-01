@@ -52,7 +52,7 @@ fun MyNavHost(
             }
             composable("cart") {
                 bars.value = true
-                CartScreen(paddingValues, dataStore)
+                CartScreen(paddingValues)
             }
             composable<Product> {
                 val product : Product = it.toRoute()

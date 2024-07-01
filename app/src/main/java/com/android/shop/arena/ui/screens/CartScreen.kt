@@ -62,13 +62,17 @@ fun CartScreen(paddingValues: PaddingValues) {
     val cartViewModel : SharedViewModel = viewModel()
     val games by cartViewModel.games.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
+    val response = remember {
+        mutableStateOf(false)
+    }
     val cartItemsDetails = games.filter { game ->
         cartItems.any { cartItem -> cartItem.id == game.id }
     }
+    response.value = true
     val uid = cartViewModel.userId.value
 
 
-    if (cartItemsDetails.isEmpty() || uid == "") {
+    if (!(response.value) || uid == "") {
         Loader()
     }
     else{
@@ -193,10 +197,13 @@ fun CartScreen(paddingValues: PaddingValues) {
                                         .size(17.dp)
                                         .clickable {
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                if (cartItems[game].quantity > 1){
-                                                    updateCartItemQuantity(cartItems[game].id, uid, cartItems[game].quantity -1)
-                                                }
-                                                else{
+                                                if (cartItems[game].quantity > 1) {
+                                                    updateCartItemQuantity(
+                                                        cartItems[game].id,
+                                                        uid,
+                                                        cartItems[game].quantity - 1
+                                                    )
+                                                } else {
                                                     removeCartItem(cartItems[game].id, uid)
                                                 }
 
@@ -213,7 +220,11 @@ fun CartScreen(paddingValues: PaddingValues) {
                                         .size(16.dp)
                                         .clickable {
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                updateCartItemQuantity(cartItems[game].id, uid, cartItems[game].quantity + 1)
+                                                updateCartItemQuantity(
+                                                    cartItems[game].id,
+                                                    uid,
+                                                    cartItems[game].quantity + 1
+                                                )
                                             }
 
                                         },
