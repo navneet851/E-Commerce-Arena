@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.shop.arena.R
 import com.android.shop.arena.api.removeCartItem
 import com.android.shop.arena.api.updateCartItemQuantity
+import com.android.shop.arena.data.entity.Game
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.theme.CardColor
@@ -62,21 +64,15 @@ fun CartScreen(paddingValues: PaddingValues) {
     val cartViewModel : SharedViewModel = viewModel()
     val games by cartViewModel.games.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
-    val response = remember {
-        mutableStateOf(false)
+
+
+    val cartItemsDetails = games.sortedBy { it.id }.filter { game ->
+        cartItems.sortedBy { it.id }.any { cartItem -> cartItem.id == game.id }
     }
-    val cartItemsDetails = games.filter { game ->
-        cartItems.any { cartItem -> cartItem.id == game.id }
-    }
-    response.value = true
+    val totalAmount = cartViewModel.calculateTotalAmount(cartItemsDetails.sortedBy { it.id }, cartItems.sortedBy { it.id })
+
+
     val uid = cartViewModel.userId.value
-
-
-    if (!(response.value) || uid == "") {
-        Loader()
-    }
-    else{
-
 
 
         Scaffold(
@@ -85,12 +81,7 @@ fun CartScreen(paddingValues: PaddingValues) {
                 .padding(paddingValues),
             bottomBar = {
 
-                var totalAmount by remember { mutableIntStateOf(0) }
 
-                for (i in cartItemsDetails.indices){
-                    val amount = cartItemsDetails[i].discountPrice.replace(",", "").toInt()
-                    totalAmount += amount * cartItems[i].quantity
-                }
                 Column(
                     modifier = Modifier
                         .background(Color(0xFFEAFFEE))
@@ -130,6 +121,12 @@ fun CartScreen(paddingValues: PaddingValues) {
                 }
             }
         ) {
+
+            if (cartItemsDetails.isEmpty() || uid == "") {
+                Loader(Color.White, Color(0xFF05AF22))
+            }
+            else{
+
             LazyColumn(
                 modifier = Modifier
                     .padding(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
@@ -204,8 +201,10 @@ fun CartScreen(paddingValues: PaddingValues) {
                                                         cartItems[game].quantity - 1
                                                     )
                                                 } else {
-                                                    removeCartItem(cartItems[game].id, uid)
+                                                    removeCartItem(cartItemsDetails[game].id, uid)
+
                                                 }
+                                                cartViewModel.refreshCartItems()
 
                                             }
 
@@ -225,6 +224,7 @@ fun CartScreen(paddingValues: PaddingValues) {
                                                     uid,
                                                     cartItems[game].quantity + 1
                                                 )
+                                                cartViewModel.refreshCartItems()
                                             }
 
                                         },
