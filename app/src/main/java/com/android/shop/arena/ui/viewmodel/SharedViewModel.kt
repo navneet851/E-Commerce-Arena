@@ -41,6 +41,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private val _cart : MutableStateFlow<List<Cart>> = MutableStateFlow(emptyList())
     val cartItems : StateFlow<List<Cart>> = _cart
 
+    val cartResponse : MutableState<Boolean> = mutableStateOf(false)
+
     val userId : MutableState<String> = mutableStateOf("")
 
     private var api : Api? = null
@@ -48,6 +50,16 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     init {
         getUser()
     }
+
+    fun calculateTotalAmount(cartItemsDetails: List<Game>, cartItems: List<Cart>): Int {
+        var totalAmount = 0
+        for (i in cartItemsDetails.indices){
+            val amount = cartItemsDetails[i].discountPrice.replace(",", "").toInt()
+            totalAmount += amount * cartItems[i].quantity
+        }
+        return totalAmount
+    }
+
 
     private fun getUser() = viewModelScope.launch(Dispatchers.IO) {
         dataStoreManager.uidFlow.collect{ uid ->
@@ -65,6 +77,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     }
 
     private fun cartItems() = viewModelScope.launch(Dispatchers.IO) {
+        api?.cartItems()?.collect{
+            _cart.value = it
+            cartResponse.value = true
+        }
+    }
+
+    fun refreshCartItems() = viewModelScope.launch(Dispatchers.IO) {
         api?.cartItems()?.collect{
             _cart.value = it
         }

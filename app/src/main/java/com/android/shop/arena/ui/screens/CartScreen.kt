@@ -26,10 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -51,6 +48,7 @@ import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.google.android.gms.common.internal.ServiceSpecificExtraArgs.GamesExtraArgs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,12 +63,10 @@ fun CartScreen(paddingValues: PaddingValues) {
     val games by cartViewModel.games.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
 
-
-    val cartItemsDetails = games.sortedBy { it.id }.filter { game ->
+    var cartItemsDetails = games.sortedBy { it.id }.filter { game ->
         cartItems.sortedBy { it.id }.any { cartItem -> cartItem.id == game.id }
     }
     val totalAmount = cartViewModel.calculateTotalAmount(cartItemsDetails.sortedBy { it.id }, cartItems.sortedBy { it.id })
-
 
     val uid = cartViewModel.userId.value
 
@@ -123,7 +119,12 @@ fun CartScreen(paddingValues: PaddingValues) {
         ) {
 
             if (cartItemsDetails.isEmpty() || uid == "") {
-                Loader(Color.White, Color(0xFF05AF22))
+                //Loader(Color.White, Color(0xFF05AF22))
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "Cart is Empty"
+                )
             }
             else{
 
@@ -156,6 +157,8 @@ fun CartScreen(paddingValues: PaddingValues) {
                         ) {
                             Text(
                                 text = cartItemsDetails[game].name,
+                                overflow = TextOverflow.Clip,
+                                maxLines = 1,
                                 color = Color.Black,
                                 style = MaterialTheme.typography.titleMedium,
                                 textAlign = TextAlign.Left,

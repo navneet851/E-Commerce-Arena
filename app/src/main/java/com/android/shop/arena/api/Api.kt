@@ -28,7 +28,7 @@ class Api(private val uid : String) {
 
     suspend fun cartItems() : Flow<List<Cart>> {
         return flow{
-            emit(emptyList<Cart>())
+            emit(emptyList())
             val snapshot = firestore.collection("cart")
                 .whereEqualTo("uid", uid)
                 .get().await()
