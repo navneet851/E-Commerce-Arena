@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.toRoute
 import com.android.shop.arena.data.pref.DataStoreManager
+import com.android.shop.arena.ui.screens.AddressScreen
 import com.android.shop.arena.ui.screens.CartScreen
 import com.android.shop.arena.ui.screens.HomeScreen
 import com.android.shop.arena.ui.screens.LoginScreen
@@ -52,7 +53,7 @@ fun MyNavHost(
             }
             composable("cart") {
                 bars.value = true
-                CartScreen(paddingValues)
+                CartScreen(paddingValues, navController)
             }
             composable<Product> {
                 val product : Product = it.toRoute()
@@ -62,6 +63,10 @@ fun MyNavHost(
             composable("profile") {
                 bars.value = true
                 ProfileScreen(navController, dataStore, paddingValues)
+            }
+            composable("order") {
+                bars.value = false
+                AddressScreen(navController)
             }
 
     }

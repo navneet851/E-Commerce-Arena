@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.android.shop.arena.R
 import com.android.shop.arena.api.removeCartItem
 import com.android.shop.arena.api.updateCartItemQuantity
@@ -59,7 +60,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalGlideComposeApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CartScreen(paddingValues: PaddingValues) {
+fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
 
     val cartViewModel : SharedViewModel = viewModel()
     val games by cartViewModel.games.collectAsState()
@@ -79,8 +80,12 @@ fun CartScreen(paddingValues: PaddingValues) {
                 .padding(paddingValues),
 
             topBar = {
-                     Row {
-                         val state = listOf<OrderState>(OrderState(Color.Green, "Bag"), OrderState(text = "Address"), OrderState(text = "Payment"))
+                     Row(
+                         modifier = Modifier.fillMaxWidth(),
+                         verticalAlignment = Alignment.CenterVertically,
+                         horizontalArrangement = Arrangement.Center,
+                     ) {
+                         val state = listOf<OrderState>(OrderState(Color(0xFF00C41E), "Bag"), OrderState(text = "Address"), OrderState(text = "Payment"))
                          OrderProgress(state = state)
                      }
             },
@@ -114,7 +119,9 @@ fun CartScreen(paddingValues: PaddingValues) {
                             .fillMaxWidth()
                             .padding(10.dp)
                         ,
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                                  navController.navigate("order")
+                                  },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF05AF22),
                             contentColor = Color.White
@@ -139,7 +146,7 @@ fun CartScreen(paddingValues: PaddingValues) {
 
             LazyColumn(
                 modifier = Modifier
-                    .padding(0.dp, 0.dp, 0.dp, it.calculateBottomPadding())
+                    .padding(it)
                     .fillMaxSize()
             ) {
                 items(cartItems.size) { game ->

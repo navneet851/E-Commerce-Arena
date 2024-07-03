@@ -76,6 +76,7 @@ fun ProductScreen(id: Int, navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.background(Color.Black).padding(10.dp, 0.dp),
                 title = {
                     Text(text = "")
                 },

@@ -36,10 +36,11 @@ fun OrderProgress(state : List<OrderState>) {
 fun LinearProgress(color: Color, text: String = "") {
     LinearProgressIndicator(
         modifier = Modifier
-            .padding(5.dp, 0.dp)
-            .width(70.dp)
-            .height(1.dp),
-        trackColor = color
+            .padding(3.dp, 0.dp)
+            .width(80.dp)
+            .height(2.dp),
+        trackColor = color,
+        color = color
         )
     Text(
         text = text,
