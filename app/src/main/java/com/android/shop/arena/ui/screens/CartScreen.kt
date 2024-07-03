@@ -42,8 +42,10 @@ import com.android.shop.arena.R
 import com.android.shop.arena.api.removeCartItem
 import com.android.shop.arena.api.updateCartItemQuantity
 import com.android.shop.arena.data.entity.Game
+import com.android.shop.arena.data.entity.OrderState
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.components.Loader
+import com.android.shop.arena.ui.components.OrderProgress
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -78,7 +80,8 @@ fun CartScreen(paddingValues: PaddingValues) {
 
             topBar = {
                      Row {
-
+                         val state = listOf<OrderState>(OrderState(Color.Green, "Bag"), OrderState(text = "Address"), OrderState(text = "Payment"))
+                         OrderProgress(state = state)
                      }
             },
 
