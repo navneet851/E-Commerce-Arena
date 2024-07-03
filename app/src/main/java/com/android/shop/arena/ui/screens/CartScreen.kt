@@ -63,7 +63,7 @@ fun CartScreen(paddingValues: PaddingValues) {
     val games by cartViewModel.games.collectAsState()
     val cartItems by cartViewModel.cartItems.collectAsState()
 
-    var cartItemsDetails = games.sortedBy { it.id }.filter { game ->
+    val cartItemsDetails = games.sortedBy { it.id }.filter { game ->
         cartItems.sortedBy { it.id }.any { cartItem -> cartItem.id == game.id }
     }
     val totalAmount = cartViewModel.calculateTotalAmount(cartItemsDetails.sortedBy { it.id }, cartItems.sortedBy { it.id })
@@ -75,9 +75,15 @@ fun CartScreen(paddingValues: PaddingValues) {
             containerColor = Color.White,
             modifier = Modifier
                 .padding(paddingValues),
+
+            topBar = {
+                     Row {
+
+                     }
+            },
+
+
             bottomBar = {
-
-
                 Column(
                     modifier = Modifier
                         .background(Color(0xFFEAFFEE))
