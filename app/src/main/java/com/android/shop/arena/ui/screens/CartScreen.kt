@@ -70,11 +70,11 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
         cartItems.sortedBy { it.id }.any { cartItem -> cartItem.id == game.id }
     }
     val totalAmount = cartViewModel.calculateTotalAmount(cartItemsDetails.sortedBy { it.id }, cartItems.sortedBy { it.id })
-
     val uid = cartViewModel.userId.value
 
 
-        Scaffold(
+
+    Scaffold(
             containerColor = Color.White,
             modifier = Modifier
                 .padding(paddingValues),

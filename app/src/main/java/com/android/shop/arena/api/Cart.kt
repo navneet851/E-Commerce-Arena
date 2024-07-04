@@ -1,6 +1,7 @@
 package com.android.shop.arena.api
 
 import android.util.Log
+import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -41,4 +42,15 @@ suspend fun removeCartItem(itemId: Int, uid: String) {
         .firstOrNull()
 
     cartItemRef?.reference?.delete()
+}
+
+fun saveAddressToFirestore(address: Address) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection("addresses").add(address)
+        .addOnSuccessListener { documentReference ->
+            Log.d("Firestore", "DocumentSnapshot added with ID: ${documentReference.id}")
+        }
+        .addOnFailureListener { e ->
+            Log.w("Firestore", "Error adding document", e)
+        }
 }

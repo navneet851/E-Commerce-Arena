@@ -1,6 +1,6 @@
 package com.android.shop.arena.data.entity
 
-class Game (
+data class Game (
     val id : Int = -1,
     val name : String = "cartovr",
     val coverUri : String = " ",

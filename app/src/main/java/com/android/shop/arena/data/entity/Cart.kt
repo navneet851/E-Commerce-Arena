@@ -1,6 +1,6 @@
 package com.android.shop.arena.data.entity
 
-class Cart(
+data class Cart(
     val id: Int,
     val quantity: Int,
     val uid : String
