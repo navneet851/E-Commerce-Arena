@@ -1,17 +1,21 @@
 package com.android.shop.arena.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -41,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.android.shop.arena.R
+import com.android.shop.arena.api.deleteAddressByFlat
 import com.android.shop.arena.api.saveAddressToFirestore
 import com.android.shop.arena.data.entity.OrderState
 import com.android.shop.arena.ui.components.AddressInputDialog
@@ -116,8 +121,11 @@ fun AddressScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(10.dp, 10.dp, 10.dp, 0.dp)
                 ){
+                    val quantity = cartItems.sumOf {
+                        it.quantity
+                    }
                     Text(text = "Item", fontSize = 12.sp)
-                    Text(text = "x${cartItems.size}", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text(text = "x${quantity}", fontSize = 13.sp, fontWeight = FontWeight.Medium)
                 }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -143,7 +151,13 @@ fun AddressScreen(navController: NavController) {
                         .padding(10.dp)
                     ,
                     onClick = {
-                        navController.navigate("order")
+                        if (addresses.isEmpty()){
+                            Toast.makeText(navController.context, "Choose Address", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            //navController.navigate("order")
+                        }
+
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF05AF22),
@@ -189,48 +203,82 @@ fun AddressScreen(navController: NavController) {
 
             }
 
-            repeat(addresses.size){ index ->
+            if (addresses.isEmpty()){
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    text = "No Address Found"
+                )
+            }
+            else{
+                repeat(addresses.size){ index ->
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .padding(10.dp, 5.dp)
-                        .fillMaxWidth()
-                        .height(130.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(
-                            if (checkBoxIndex == index) Color(0xFFEAFFEE) else CardColor
-                        )
-                        .padding(10.dp, 5.dp)
-                ) {
-                    Column {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .padding(10.dp, 5.dp)
+                            .fillMaxWidth()
+                            .height(130.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(
+                                if (checkBoxIndex == index) Color(0xFFEAFFEE) else CardColor
+                            )
+                            .padding(10.dp, 5.dp)
+                    ) {
+                        Column {
 
-                        Text(text = addresses[index].name, fontSize = 13.sp, lineHeight = 1.sp)
-                        Text(text = addresses[index].mobile, fontSize = 13.sp, lineHeight = 1.sp)
-                        Text(text = addresses[index].flat, fontSize = 13.sp, lineHeight = 1.sp)
-                        Text(text = addresses[index].city, fontSize = 13.sp, lineHeight = 1.sp)
-                        Text(text = addresses[index].state, fontSize = 13.sp, lineHeight = 1.sp)
-                        Text(text = addresses[index].country, fontSize = 13.sp, lineHeight = 1.sp)
-                        Text(text = addresses[index].pinCode, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].name, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].mobile, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].flat, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].city, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].state, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].country, fontSize = 13.sp, lineHeight = 1.sp)
+                            Text(text = addresses[index].pinCode, fontSize = 13.sp, lineHeight = 1.sp)
+                        }
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
+                            Checkbox(
+                                checked = checkBoxIndex == index,
+                                onCheckedChange = {
+                                    checkBoxIndex = if (it) index else 0
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color(0xFF00C41E),
+                                    checkmarkColor = Color.White
+                                )
+                            )
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "delete",
+                                Modifier
+                                    .padding(0.dp, 10.dp)
+                                    .clickable {
+                                        deleteAddressByFlat(addresses[index].flat, uid){
+                                            orderViewModel.refreshAddresses()
+                                            checkBoxIndex = 0
+                                        }
+                                    },
+                                tint = Color.Black
+                            )
+                        }
+
+
                     }
-
-                    Checkbox(
-                        checked = checkBoxIndex == index,
-                        onCheckedChange = {
-                            checkBoxIndex = if (it) index else 0
-                        },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = Color(0xFF00C41E),
-                            checkmarkColor = Color.White
-                        )
-                    )
                 }
             }
+
+
 
             AddressInputDialog(showDialog = showDialog, onSave = { address ->
                 if (uid != ""){
                     val addresss = address.copy(uid = uid)
-                    saveAddressToFirestore(addresss)
+                    saveAddressToFirestore(addresss){
+                        orderViewModel.refreshAddresses()
+                    }
                 }
             })
 

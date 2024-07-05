@@ -1,6 +1,7 @@
 package com.android.shop.arena.ui.screens
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,7 +59,6 @@ import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
 
@@ -120,7 +120,18 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                             .padding(10.dp)
                         ,
                         onClick = {
-                                  navController.navigate("order")
+                                    if (uid != ""){
+                                        if (cartItems.isNotEmpty()){
+                                            navController.navigate("order")
+                                        }
+                                        else{
+                                            Toast.makeText(navController.context, "Cart is Empty", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                    else{
+                                        navController.navigate("profile")
+                                    }
+
                                   },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF05AF22),
@@ -137,7 +148,7 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
             if (cartItemsDetails.isEmpty() || uid == "") {
                 //Loader(Color.White, Color(0xFF05AF22))
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.padding(it).fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     text = "Cart is Empty"
                 )

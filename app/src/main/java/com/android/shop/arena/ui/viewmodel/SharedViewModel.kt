@@ -45,6 +45,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private val _addresses : MutableStateFlow<List<Address>> = MutableStateFlow(emptyList())
     val address : StateFlow<List<Address>> = _addresses
 
+    val totalItems : MutableState<Int> = mutableStateOf(0)
+
     val userId : MutableState<String> = mutableStateOf("")
 
     private var api : Api? = null
@@ -53,11 +55,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
         getUser()
     }
 
+
     fun calculateTotalAmount(cartItemsDetails: List<Game>, cartItems: List<Cart>): Int {
         var totalAmount = 0
         for (i in cartItemsDetails.indices){
             val amount = cartItemsDetails[i].discountPrice.replace(",", "").toInt()
             totalAmount += amount * cartItems[i].quantity
+            totalItems.value += cartItems[i].quantity
         }
         return totalAmount
     }
@@ -85,16 +89,24 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
         }
     }
 
+    private fun getAddresses() = viewModelScope.launch(Dispatchers.IO) {
+        api?.fetchAddresses()?.collect{
+            _addresses.value = it
+        }
+    }
+
     fun refreshCartItems() = viewModelScope.launch(Dispatchers.IO) {
         api?.cartItems()?.collect{
             _cart.value = it
         }
     }
 
-    private fun getAddresses() = viewModelScope.launch(Dispatchers.IO) {
+    fun refreshAddresses() = viewModelScope.launch(Dispatchers.IO) {
         api?.fetchAddresses()?.collect{
             _addresses.value = it
         }
     }
+
+
 
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 
 fun addToCart(cartItem : Cart, onSuccess : () -> Unit){
@@ -44,13 +45,28 @@ suspend fun removeCartItem(itemId: Int, uid: String) {
     cartItemRef?.reference?.delete()
 }
 
-fun saveAddressToFirestore(address: Address) {
+fun saveAddressToFirestore(address: Address, onClick : () -> Unit) {
     val db = FirebaseFirestore.getInstance()
     db.collection("addresses").add(address)
         .addOnSuccessListener { documentReference ->
             Log.d("Firestore", "DocumentSnapshot added with ID: ${documentReference.id}")
+            onClick()
         }
         .addOnFailureListener { e ->
             Log.w("Firestore", "Error adding document", e)
+        }
+}
+
+fun deleteAddressByFlat(flat: String, uid: String, onClick: () -> Unit) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection("addresses")
+        .whereEqualTo("uid", uid)
+        .whereEqualTo("flat", flat)
+        .get()
+        .addOnSuccessListener { documents ->
+            for (document in documents) {
+                db.collection("addresses").document(document.id).delete()
+            }
+            onClick()
         }
 }

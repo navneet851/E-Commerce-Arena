@@ -60,8 +60,6 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.Placeholder
 import com.bumptech.glide.integration.compose.placeholder
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
@@ -183,7 +181,7 @@ fun ProductScreen(id: Int, navController: NavHostController) {
                                 }
                             }
                             if(uid == ""){
-                                navController.navigate("login")
+                                navController.navigate("profile")
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
