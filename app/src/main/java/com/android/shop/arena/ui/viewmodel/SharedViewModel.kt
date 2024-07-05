@@ -15,6 +15,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.shop.arena.api.Api
+import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.android.shop.arena.data.entity.Game
 import com.android.shop.arena.data.entity.User
@@ -41,7 +42,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private val _cart : MutableStateFlow<List<Cart>> = MutableStateFlow(emptyList())
     val cartItems : StateFlow<List<Cart>> = _cart
 
-    val cartResponse : MutableState<Boolean> = mutableStateOf(false)
+    private val _addresses : MutableStateFlow<List<Address>> = MutableStateFlow(emptyList())
+    val address : StateFlow<List<Address>> = _addresses
 
     val userId : MutableState<String> = mutableStateOf("")
 
@@ -67,6 +69,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
             api = Api(userId.value)
             getGames()
             cartItems()
+            getAddresses()
         }
     }
 
@@ -79,13 +82,18 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private fun cartItems() = viewModelScope.launch(Dispatchers.IO) {
         api?.cartItems()?.collect{
             _cart.value = it
-            cartResponse.value = true
         }
     }
 
     fun refreshCartItems() = viewModelScope.launch(Dispatchers.IO) {
         api?.cartItems()?.collect{
             _cart.value = it
+        }
+    }
+
+    private fun getAddresses() = viewModelScope.launch(Dispatchers.IO) {
+        api?.fetchAddresses()?.collect{
+            _addresses.value = it
         }
     }
 

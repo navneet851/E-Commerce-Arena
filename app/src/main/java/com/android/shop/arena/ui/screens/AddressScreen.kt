@@ -56,6 +56,7 @@ fun AddressScreen(navController: NavController) {
     val orderViewModel : SharedViewModel = viewModel()
     val games by orderViewModel.games.collectAsState()
     val cartItems by orderViewModel.cartItems.collectAsState()
+    val addresses by orderViewModel.address.collectAsState()
 
     val uid = orderViewModel.userId.value
 
@@ -188,24 +189,31 @@ fun AddressScreen(navController: NavController) {
 
             }
 
-            repeat(6){ index ->
+            repeat(addresses.size){ index ->
 
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .padding(10.dp, 5.dp)
                         .fillMaxWidth()
-                        .height(140.dp)
+                        .height(130.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(
                             if (checkBoxIndex == index) Color(0xFFEAFFEE) else CardColor
                         )
                         .padding(10.dp, 5.dp)
                 ) {
-                    Text(
-                        text = "frgbrehgbrejhvbrejkdghvbredj",
-                        fontSize = 13.sp
-                    )
+                    Column {
+
+                        Text(text = addresses[index].name, fontSize = 13.sp, lineHeight = 1.sp)
+                        Text(text = addresses[index].mobile, fontSize = 13.sp, lineHeight = 1.sp)
+                        Text(text = addresses[index].flat, fontSize = 13.sp, lineHeight = 1.sp)
+                        Text(text = addresses[index].city, fontSize = 13.sp, lineHeight = 1.sp)
+                        Text(text = addresses[index].state, fontSize = 13.sp, lineHeight = 1.sp)
+                        Text(text = addresses[index].country, fontSize = 13.sp, lineHeight = 1.sp)
+                        Text(text = addresses[index].pinCode, fontSize = 13.sp, lineHeight = 1.sp)
+                    }
+
                     Checkbox(
                         checked = checkBoxIndex == index,
                         onCheckedChange = {
