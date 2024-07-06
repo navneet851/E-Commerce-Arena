@@ -148,7 +148,7 @@ fun AddressScreen(navController: NavController) {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp, 10.dp, 10.dp, 30.dp)
                     ,
                     onClick = {
                         if (addresses.isEmpty()){

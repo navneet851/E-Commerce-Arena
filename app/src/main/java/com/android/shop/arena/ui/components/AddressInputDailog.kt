@@ -70,9 +70,12 @@ fun AddressInputDialog(showDialog: MutableState<Boolean>, onSave: (Address) -> U
                         contentColor = Color.Black
                     ),
                     onClick = {
-                        val address = Address(name, mobile, flat, city, state, country, pinCode)
-                        onSave(address)
-                        showDialog.value = false
+                        if(name.isNotEmpty() && mobile.isNotEmpty() && flat.isNotEmpty() && city.isNotEmpty() && state.isNotEmpty() && country.isNotEmpty() && pinCode.isNotEmpty()){
+                            val address = Address(name, mobile, flat, city, state, country, pinCode)
+                            onSave(address)
+                            showDialog.value = false
+                        }
+
                     }
                 ) {
                     Text("Save")
