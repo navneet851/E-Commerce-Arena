@@ -4,6 +4,7 @@ import android.util.Log
 import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.android.shop.arena.data.entity.Game
+import com.android.shop.arena.data.entity.Transaction
 import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.google.firebase.Firebase
@@ -46,6 +47,17 @@ class Api(private val uid : String) {
                 .get().await()
             val addresses = snapshot.toObjects(Address::class.java)
             emit(addresses)
+        }
+    }
+
+    suspend fun fetchTransactions() : Flow<List<Transaction>> {
+        return flow{
+            emit(emptyList())
+            val snapshot = firestore.collection("transactions")
+                .whereEqualTo("uid", uid)
+                .get().await()
+            val transactions = snapshot.toObjects(Transaction::class.java)
+            emit(transactions)
         }
     }
 

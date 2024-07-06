@@ -3,6 +3,7 @@ package com.android.shop.arena.api
 import android.util.Log
 import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
+import com.android.shop.arena.data.entity.Transaction
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -69,4 +70,10 @@ fun deleteAddressByFlat(flat: String, uid: String, onClick: () -> Unit) {
             }
             onClick()
         }
+}
+
+fun addTransaction(transaction: Transaction, onSuccess: () -> Unit){
+    FirebaseFirestore.getInstance().collection("transactions")
+        .add(transaction)
+
 }

@@ -167,6 +167,9 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                             .padding(10.dp, 5.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(CardColor)
+                            .clickable {
+                                navController.navigate("product")
+                            }
                     ) {
                         GlideImage(
                             modifier = Modifier
@@ -250,7 +253,7 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                                         .clickable {
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 updateCartItemQuantity(
-                                                    cartItems[game].id,
+                                                    cartItemsDetails[game].id,
                                                     uid,
                                                     cartItems[game].quantity + 1
                                                 )
