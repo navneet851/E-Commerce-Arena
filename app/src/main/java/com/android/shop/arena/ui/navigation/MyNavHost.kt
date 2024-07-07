@@ -14,6 +14,7 @@ import com.android.shop.arena.ui.screens.AddressScreen
 import com.android.shop.arena.ui.screens.CartScreen
 import com.android.shop.arena.ui.screens.HomeScreen
 import com.android.shop.arena.ui.screens.LoginScreen
+import com.android.shop.arena.ui.screens.MyOrdersScreen
 import com.android.shop.arena.ui.screens.ProductScreen
 import com.android.shop.arena.ui.screens.ProfileScreen
 import com.android.shop.arena.ui.screens.RegisterScreen
@@ -67,6 +68,10 @@ fun MyNavHost(
             composable("order") {
                 bars.value = false
                 AddressScreen(navController)
+            }
+            composable("myOrders") {
+                bars.value = false
+                MyOrdersScreen()
             }
 
     }

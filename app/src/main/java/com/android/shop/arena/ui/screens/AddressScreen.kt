@@ -155,7 +155,7 @@ fun AddressScreen(navController: NavController) {
                             Toast.makeText(navController.context, "Choose Address", Toast.LENGTH_SHORT).show()
                         }
                         else{
-                            //navController.navigate("order")
+                            navController.navigate("myOrders")
                         }
 
                     },
