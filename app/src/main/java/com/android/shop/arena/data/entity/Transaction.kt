@@ -2,11 +2,16 @@ package com.android.shop.arena.data.entity
 
 data class Transaction(
     val amount : String,
-    val date : String,
-    val time : String,
+    val dateAndTime : String,
     val uid : String,
-    val addressPrint : String,
-    val status : Boolean = true
+    val address : Address,
+    val status : Boolean = true,
+    val orderedItem: List<OrderedItem>
 ) {
-    constructor() : this("", "", "", "", "", true)
+    constructor() : this("", "", "", Address(), true, emptyList())
 }
+
+data class OrderedItem(
+    val name : String,
+    val quantity : Int
+)

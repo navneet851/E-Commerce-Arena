@@ -77,3 +77,15 @@ fun addTransaction(transaction: Transaction, onSuccess: () -> Unit){
         .add(transaction)
 
 }
+
+fun addTransactionToFirestore(transaction: Transaction, onSuccess: () -> Unit) {
+    val db = FirebaseFirestore.getInstance()
+    db.collection("transactions")
+        .add(transaction)
+        .addOnSuccessListener {
+            onSuccess()
+        }
+        .addOnFailureListener { e ->
+            Log.d("Firestore", "Error adding document", e)
+        }
+}

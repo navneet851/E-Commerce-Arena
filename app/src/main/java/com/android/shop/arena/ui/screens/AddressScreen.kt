@@ -45,10 +45,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.android.shop.arena.R
+import com.android.shop.arena.api.addTransactionToFirestore
 import com.android.shop.arena.api.deleteAddressByFlat
 import com.android.shop.arena.api.saveAddressToFirestore
 import com.android.shop.arena.data.entity.OrderState
+import com.android.shop.arena.data.entity.OrderedItem
+import com.android.shop.arena.data.entity.Transaction
 import com.android.shop.arena.ui.components.AddressInputDialog
+import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.components.OrderProgress
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.theme.InputColor
@@ -68,223 +72,255 @@ fun AddressScreen(navController: NavController) {
     val cartItemsDetails = games.sortedBy { it.id }.filter { game ->
         cartItems.sortedBy { it.id }.any { cartItem -> cartItem.id == game.id }
     }
-    val totalAmount = orderViewModel.calculateTotalAmount(cartItemsDetails.sortedBy { it.id }, cartItems.sortedBy { it.id })
-    Scaffold(
-        containerColor = Color.White,
+    val orderedItem = mutableListOf<OrderedItem>()
+    cartItemsDetails.forEach {
+        orderedItem.add(OrderedItem(it.name, cartItems[cartItemsDetails.indexOf(it)].quantity))
+    }
 
-        topBar = {
-            Column {
-                TopAppBar(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .padding(10.dp, 0.dp),
-                    title = {
-                        Text(text = "")
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.White,
-                        navigationIconContentColor = Color.Black,
-                    ),
-                    navigationIcon = {
-                        Icon(
-                            modifier = Modifier.clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                navController.navigateUp()
-                            },
-                            painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                            contentDescription = "back"
-                        )
+    val totalAmount = orderViewModel.calculateTotalAmount(cartItemsDetails.sortedBy { it.id }, cartItems.sortedBy { it.id })
+
+    var checkBoxIndex by remember {
+        mutableStateOf(0)
+    }
+
+    var showLoader by remember {
+        mutableStateOf(false)
+    }
+
+    if (showLoader){
+        Loader()
+    }
+    else{
+        Scaffold(
+            containerColor = Color.White,
+
+            topBar = {
+                Column {
+                    TopAppBar(
+                        modifier = Modifier
+                            .background(Color.White)
+                            .padding(10.dp, 0.dp),
+                        title = {
+                            Text(text = "")
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.White,
+                            navigationIconContentColor = Color.Black,
+                        ),
+                        navigationIcon = {
+                            Icon(
+                                modifier = Modifier.clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    navController.navigateUp()
+                                },
+                                painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                                contentDescription = "back"
+                            )
+                        }
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        val state = listOf<OrderState>(OrderState(Color(0xFF00C41E), "Bag"), OrderState(Color(0xFF00C41E), text = "Address"), OrderState(text = "Payment"))
+                        OrderProgress(state = state)
                     }
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                }
+
+            },
+
+            bottomBar = {
+                Column(
+                    modifier = Modifier
+                        .background(Color(0xFFEAFFEE))
                 ) {
-                    val state = listOf<OrderState>(OrderState(Color(0xFF00C41E), "Bag"), OrderState(Color(0xFF00C41E), text = "Address"), OrderState(text = "Payment"))
-                    OrderProgress(state = state)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                    ){
+                        val quantity = cartItems.sumOf {
+                            it.quantity
+                        }
+                        Text(text = "Item", fontSize = 12.sp)
+                        Text(text = "x${quantity}", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp, 10.dp, 10.dp, 0.dp)
+                    ){
+                        Text(text = "Total MRP", fontSize = 12.sp)
+                        Text(text = "₹ $totalAmount", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp, 5.dp)
+                    ){
+                        Text(text = "Shipping Fee", fontSize = 12.sp)
+                        Text(text = "FREE", fontSize = 12.sp, color = Color(0xFF05AF22))
+                    }
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp, 10.dp, 10.dp, 30.dp)
+                        ,
+                        onClick = {
+                            if (addresses.isEmpty()){
+                                Toast.makeText(navController.context, "Choose Address", Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                showLoader = true
+                                val transaction = Transaction(
+                                    totalAmount.toString(),
+                                    orderViewModel.getCurrentDateTimeFormatted(),
+                                    uid,
+                                    addresses[checkBoxIndex],
+                                    true,
+                                    orderedItem
+                                )
+                                addTransactionToFirestore(transaction){
+                                    showLoader = false
+                                    navController.navigate("myOrders")
+                                }
+
+                            }
+
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF05AF22),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(6.dp)
+                    ) {
+                        Text(text = "PROCEED TO PAY")
+                    }
                 }
             }
 
-        },
 
-        bottomBar = {
+
+
+        ){ it ->
             Column(
                 modifier = Modifier
-                    .background(Color(0xFFEAFFEE))
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 10.dp, 10.dp, 0.dp)
-                ){
-                    val quantity = cartItems.sumOf {
-                        it.quantity
-                    }
-                    Text(text = "Item", fontSize = 12.sp)
-                    Text(text = "x${quantity}", fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 10.dp, 10.dp, 0.dp)
-                ){
-                    Text(text = "Total MRP", fontSize = 12.sp)
-                    Text(text = "₹ $totalAmount", fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 5.dp)
-                ){
-                    Text(text = "Shipping Fee", fontSize = 12.sp)
-                    Text(text = "FREE", fontSize = 12.sp, color = Color(0xFF05AF22))
-                }
+
+
+                val showDialog = remember { mutableStateOf(false) }
+
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp, 10.dp, 10.dp, 30.dp)
+                        .padding(10.dp)
                     ,
                     onClick = {
-                        if (addresses.isEmpty()){
-                            Toast.makeText(navController.context, "Choose Address", Toast.LENGTH_SHORT).show()
-                        }
-                        else{
-                            navController.navigate("myOrders")
-                        }
-
+                        showDialog.value = true
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF05AF22),
+                        containerColor = InputColor,
                         contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(6.dp)
                 ) {
-                    Text(text = "PROCEED TO PAY")
+                    Text(text = "Add Address", color = Color.Black, fontSize = 13.sp)
+
                 }
-            }
-        }
 
+                if (addresses.isEmpty()){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        text = "No Address Found"
+                    )
+                }
+                else{
+                    repeat(addresses.size){ index ->
 
-
-
-    ){ it ->
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .verticalScroll(rememberScrollState())
-        ) {
-
-            var checkBoxIndex by remember {
-                mutableStateOf(0)
-            }
-            val showDialog = remember { mutableStateOf(false) }
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                ,
-                onClick = {
-                    showDialog.value = true
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = InputColor,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(6.dp)
-            ) {
-                Text(text = "Add Address", color = Color.Black, fontSize = 13.sp)
-
-            }
-
-            if (addresses.isEmpty()){
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    text = "No Address Found"
-                )
-            }
-            else{
-                repeat(addresses.size){ index ->
-
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .padding(10.dp, 5.dp)
-                            .fillMaxWidth()
-                            .height(130.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(
-                                if (checkBoxIndex == index) Color(0xFFEAFFEE) else CardColor
-                            )
-                            .padding(10.dp, 5.dp)
-                    ) {
-                        Column {
-
-                            Text(text = addresses[index].name, fontSize = 13.sp, lineHeight = 1.sp)
-                            Text(text = addresses[index].mobile, fontSize = 13.sp, lineHeight = 1.sp)
-                            Text(text = addresses[index].flat, fontSize = 13.sp, lineHeight = 1.sp)
-                            Text(text = addresses[index].city, fontSize = 13.sp, lineHeight = 1.sp)
-                            Text(text = addresses[index].state, fontSize = 13.sp, lineHeight = 1.sp)
-                            Text(text = addresses[index].country, fontSize = 13.sp, lineHeight = 1.sp)
-                            Text(text = addresses[index].pinCode, fontSize = 13.sp, lineHeight = 1.sp)
-                        }
-
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Checkbox(
-                                checked = checkBoxIndex == index,
-                                onCheckedChange = {
-                                    checkBoxIndex = if (it) index else 0
-                                },
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = Color(0xFF00C41E),
-                                    checkmarkColor = Color.White
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .padding(10.dp, 5.dp)
+                                .fillMaxWidth()
+                                .height(130.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    if (checkBoxIndex == index) Color(0xFFEAFFEE) else CardColor
                                 )
-                            )
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "delete",
-                                Modifier
-                                    .padding(0.dp, 10.dp)
-                                    .clickable {
-                                        deleteAddressByFlat(addresses[index].flat, uid){
-                                            orderViewModel.refreshAddresses()
-                                            checkBoxIndex = 0
-                                        }
+                                .padding(10.dp, 5.dp)
+                        ) {
+                            Column {
+
+                                Text(text = addresses[index].name, fontSize = 13.sp, lineHeight = 1.sp)
+                                Text(text = addresses[index].mobile, fontSize = 13.sp, lineHeight = 1.sp)
+                                Text(text = addresses[index].flat, fontSize = 13.sp, lineHeight = 1.sp)
+                                Text(text = addresses[index].city, fontSize = 13.sp, lineHeight = 1.sp)
+                                Text(text = addresses[index].state, fontSize = 13.sp, lineHeight = 1.sp)
+                                Text(text = addresses[index].country, fontSize = 13.sp, lineHeight = 1.sp)
+                                Text(text = addresses[index].pinCode, fontSize = 13.sp, lineHeight = 1.sp)
+                            }
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxHeight()
+                            ) {
+                                Checkbox(
+                                    checked = checkBoxIndex == index,
+                                    onCheckedChange = {
+                                        checkBoxIndex = if (it) index else 0
                                     },
-                                tint = Color.Black
-                            )
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = Color(0xFF00C41E),
+                                        checkmarkColor = Color.White
+                                    )
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "delete",
+                                    Modifier
+                                        .padding(0.dp, 10.dp)
+                                        .clickable {
+                                            deleteAddressByFlat(addresses[index].flat, uid) {
+                                                orderViewModel.refreshAddresses()
+                                                checkBoxIndex = 0
+                                            }
+                                        },
+                                    tint = Color.Black
+                                )
+                            }
+
+
                         }
-
-
                     }
                 }
+
+
+
+                AddressInputDialog(showDialog = showDialog, onSave = { address ->
+                    if (uid != ""){
+                        val addresss = address.copy(uid = uid)
+                        saveAddressToFirestore(addresss){
+                            orderViewModel.refreshAddresses()
+                        }
+                    }
+                })
+
             }
 
-
-
-            AddressInputDialog(showDialog = showDialog, onSave = { address ->
-                if (uid != ""){
-                    val addresss = address.copy(uid = uid)
-                    saveAddressToFirestore(addresss){
-                        orderViewModel.refreshAddresses()
-                    }
-                }
-            })
-
         }
-
     }
+
+
 }
 
 @Preview(showBackground = true)

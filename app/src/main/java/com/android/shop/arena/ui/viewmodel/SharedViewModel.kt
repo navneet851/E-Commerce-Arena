@@ -18,6 +18,7 @@ import com.android.shop.arena.api.Api
 import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.android.shop.arena.data.entity.Game
+import com.android.shop.arena.data.entity.Transaction
 import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.bumptech.glide.Glide.init
@@ -30,6 +31,9 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.Locale.filter
 
 class SharedViewModel(application: Application) : AndroidViewModel(application){
@@ -45,6 +49,9 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private val _addresses : MutableStateFlow<List<Address>> = MutableStateFlow(emptyList())
     val address : StateFlow<List<Address>> = _addresses
 
+    private val _transactions : MutableStateFlow<List<Transaction>> = MutableStateFlow(emptyList())
+    val transactions : StateFlow<List<Transaction>> = _transactions
+
     val totalItems : MutableState<Int> = mutableStateOf(0)
 
     val userId : MutableState<String> = mutableStateOf("")
@@ -53,6 +60,11 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
 
     init {
         getUser()
+    }
+
+    fun getCurrentDateTimeFormatted(): String {
+        val dateFormat = SimpleDateFormat("H:mm d-M-yyyy", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 
 
@@ -74,6 +86,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
             getGames()
             cartItems()
             getAddresses()
+            fetchTransactions()
         }
     }
 
@@ -92,6 +105,12 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private fun getAddresses() = viewModelScope.launch(Dispatchers.IO) {
         api?.fetchAddresses()?.collect{
             _addresses.value = it
+        }
+    }
+
+    private fun fetchTransactions() = viewModelScope.launch(Dispatchers.IO) {
+        api?.fetchTransactions()?.collect{
+            _transactions.value = it
         }
     }
 
