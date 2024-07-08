@@ -14,4 +14,6 @@ data class Transaction(
 data class OrderedItem(
     val name : String,
     val quantity : Int
-)
+){
+    constructor() : this("", 0)
+}

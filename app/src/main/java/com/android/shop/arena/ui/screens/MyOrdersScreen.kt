@@ -61,7 +61,9 @@ fun MyOrdersScreen() {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.success),
-                    modifier = Modifier.padding(5.dp).size(40.dp),
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .size(40.dp),
                     contentDescription = ""
                 )
                 Text(
@@ -77,7 +79,9 @@ fun MyOrdersScreen() {
             }
 
             Column{
-
+                repeat(4){ index ->
+                    Text(text = "")
+                }
             }
 
 
