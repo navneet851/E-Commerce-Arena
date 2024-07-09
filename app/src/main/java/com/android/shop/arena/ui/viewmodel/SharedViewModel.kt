@@ -63,7 +63,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     }
 
     fun getCurrentDateTimeFormatted(): String {
-        val dateFormat = SimpleDateFormat("H:mm d-M-yyyy", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("H:mm:ss  d-M-yyyy", Locale.getDefault())
         return dateFormat.format(Date())
     }
 

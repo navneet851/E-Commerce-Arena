@@ -153,7 +153,9 @@ fun ProfileScreen(
                 ){
 
                     ProfileMenuItem(icon = R.drawable.baseline_list_alt_24, title = "My Details"){}
-                    ProfileMenuItem(icon = R.drawable.baseline_wb_shade_24, title = "My Orders"){}
+                    ProfileMenuItem(icon = R.drawable.baseline_wb_shade_24, title = "My Orders"){
+                        navController.navigate("myOrders")
+                    }
                     ProfileMenuItem(icon = R.drawable.baseline_logout_24, title = "Logout"){
                         coroutineScope.launch {
                             dataStore.deleteUID()

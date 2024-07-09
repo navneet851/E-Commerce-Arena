@@ -15,6 +15,7 @@ import com.android.shop.arena.ui.screens.CartScreen
 import com.android.shop.arena.ui.screens.HomeScreen
 import com.android.shop.arena.ui.screens.LoginScreen
 import com.android.shop.arena.ui.screens.MyOrdersScreen
+import com.android.shop.arena.ui.screens.OrderScreen
 import com.android.shop.arena.ui.screens.ProductScreen
 import com.android.shop.arena.ui.screens.ProfileScreen
 import com.android.shop.arena.ui.screens.RegisterScreen
@@ -65,13 +66,18 @@ fun MyNavHost(
                 bars.value = true
                 ProfileScreen(navController, dataStore, paddingValues)
             }
-            composable("order") {
+            composable("address") {
                 bars.value = false
                 AddressScreen(navController)
             }
-            composable("myOrders") {
+            composable<Order> {
+                val order : Order = it.toRoute()
                 bars.value = false
-                MyOrdersScreen()
+                OrderScreen(order.time, navController)
+            }
+            composable("myOrders"){
+                bars.value = false
+                MyOrdersScreen(navController)
             }
 
     }
@@ -81,6 +87,9 @@ fun MyNavHost(
 
 @Serializable
 data class Product(val id : Int)
+
+@Serializable
+data class Order(val time : String)
 
 
 

@@ -6,7 +6,8 @@ data class Transaction(
     val uid : String,
     val address : Address,
     val status : Boolean = true,
-    val orderedItem: List<OrderedItem>
+    val orderedItem: List<OrderedItem>,
+    var transactionId : String = "",
 ) {
     constructor() : this("", "", "", Address(), true, emptyList())
 }

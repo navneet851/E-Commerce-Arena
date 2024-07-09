@@ -122,7 +122,7 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                         onClick = {
                                     if (uid != ""){
                                         if (cartItems.isNotEmpty()){
-                                            navController.navigate("order")
+                                            navController.navigate("address")
                                         }
                                         else{
                                             Toast.makeText(navController.context, "Cart is Empty", Toast.LENGTH_SHORT).show()

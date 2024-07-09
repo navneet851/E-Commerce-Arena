@@ -54,6 +54,7 @@ import com.android.shop.arena.data.entity.Transaction
 import com.android.shop.arena.ui.components.AddressInputDialog
 import com.android.shop.arena.ui.components.Loader
 import com.android.shop.arena.ui.components.OrderProgress
+import com.android.shop.arena.ui.navigation.Order
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.theme.InputColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
@@ -177,10 +178,11 @@ fun AddressScreen(navController: NavController) {
                                 Toast.makeText(navController.context, "Choose Address", Toast.LENGTH_SHORT).show()
                             }
                             else{
+                                val time = orderViewModel.getCurrentDateTimeFormatted()
                                 showLoader = true
                                 val transaction = Transaction(
                                     totalAmount.toString(),
-                                    orderViewModel.getCurrentDateTimeFormatted(),
+                                    time,
                                     uid,
                                     addresses[checkBoxIndex],
                                     true,
@@ -188,7 +190,7 @@ fun AddressScreen(navController: NavController) {
                                 )
                                 addTransactionToFirestore(transaction){
                                     showLoader = false
-                                    navController.navigate("myOrders")
+                                    navController.navigate(Order(time = time))
                                 }
 
                             }

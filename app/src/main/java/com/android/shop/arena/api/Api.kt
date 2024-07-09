@@ -56,7 +56,11 @@ class Api(private val uid : String) {
             val snapshot = firestore.collection("transactions")
                 .whereEqualTo("uid", uid)
                 .get().await()
-            val transactions = snapshot.toObjects(Transaction::class.java)
+            val transactions = snapshot.documents.map { document ->
+                document.toObject(Transaction::class.java)?.apply {
+                    transactionId = document.id // Set the document ID here
+                }
+            }.filterNotNull()
             emit(transactions)
         }
     }
