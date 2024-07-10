@@ -1,7 +1,7 @@
 <p align="center">
   <img style="border-radius : 10px;" src="app/src/main/res/drawable/arena_logo.jpg" alt="Logo" width="80" height="80">
-  <h3 align="center">Music Stream Neptune</h3>
-<p align="center">A Spotify clone implemented with Spotify features</p>
+  <h3 align="center">GAMES SHOPPING APP ARENA</h3>
+<p align="center">An E-Commere Shopping App selling pc-console games</p>
 </p>
 
 <p align="center">
