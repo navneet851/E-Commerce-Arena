@@ -5,18 +5,18 @@
 </p>
 
 <p align="center">
-  Music Stream Neptune is a music streaming application developed in Kotlin. The application allows users to play, pause, shuffle, and repeat songs. It also provides a feature to like songs and maintain a list of liked songs. In Music Stream Neptune, Firebase plays a pivotal role by providing several backend services. Firebase Firestore serves as the primary database for the application, storing user data such as playlists, songs. Firebase Storage is utilized to store and serve the album art images for the songs. Lastly. By integrating these Firebase services, Music Stream Neptune is able to offer a robust and feature-rich music streaming experience to its users.
+  Shop Arena is an Android application designed to provide a seamless shopping experience for video game enthusiasts. Users can browse a wide selection of games, add them to their cart, and proceed with their transactions
 </p>
 
 ## Screenshots
 
 <p align="center">
   <img src="assets/Screenshot_20240710_230146.png" alt="Screenshot 1" width="200">
+  <img src="assets/Screenshot_20240710_230722.png" alt="Screenshot 3" width="200">
   <img src="assets/Screenshot_20240710_230436.png" alt="Screenshot 2" width="200">
   <img src="assets/Screenshot_20240710_230514.png" alt="Screenshot 3" width="200">
-  <img src="assets/Screenshot_20240710_230616.png" alt="Screenshot 3" width="200">
-  <img src="assets/Screenshot_20240710_230722.png" alt="Screenshot 3" width="200">
   <img src="assets/Screenshot_20240710_231018.png" alt="Screenshot 3" width="200">
+  <img src="assets/Screenshot_20240710_230616.png" alt="Screenshot 3" width="200">
 </p>
 
 
