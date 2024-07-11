@@ -27,9 +27,11 @@ class MainActivity : ComponentActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         dataStoreManager = DataStoreManager(this)
         enableEdgeToEdge()
         setContent {
+            askNotificationPermission()
             ArenaTheme {
                 App()
             }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Arena</string>
+    <string name="notification_channel_id">my_notification_channel</string>
 </resources>
