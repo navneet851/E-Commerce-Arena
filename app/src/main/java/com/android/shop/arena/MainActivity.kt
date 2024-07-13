@@ -11,6 +11,10 @@ import androidx.core.content.ContextCompat
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.android.shop.arena.ui.theme.ArenaTheme
 import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 
 class MainActivity : ComponentActivity() {
 
@@ -20,18 +24,23 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
         if (isGranted) {
-            // FCM SDK (and your app) can post notifications.
+
         } else {
-            // TODO: Inform user that that your app will not show notifications.
+            showPermissionExplanationDialog()
         }
     }
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        requestNotificationPermission()
         dataStoreManager = DataStoreManager(this)
         enableEdgeToEdge()
         setContent {
-            askNotificationPermission()
+
             ArenaTheme {
                 App()
             }
@@ -39,23 +48,42 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun askNotificationPermission() {
-        // This is only necessary for API level >= 33 (TIRAMISU)
+
+
+    private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
-            } else {
-                // Directly ask for the permission
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
+
+    private fun showPermissionExplanationDialog() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            // Show rationale dialog and request permission again
+            AlertDialog.Builder(this)
+                .setTitle("Permission Required")
+                .setMessage("This permission is needed to post notifications. Please allow.")
+                .setPositiveButton("OK") { _, _ ->
+                    requestNotificationPermission()
+                }
+                .create()
+                .show()
+        } else {
+            // Guide user to app settings
+            AlertDialog.Builder(this)
+                .setTitle("Permission Denied")
+                .setMessage("You have denied the notification permission. Please enable it in app settings.")
+                .setPositiveButton("Open Settings") { _, _ ->
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                }
+                .create()
+                .show()
+        }
+    }
+
+
+
 }
 
