@@ -15,6 +15,8 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import com.android.shop.arena.notification.notificationChannel
+import com.android.shop.arena.notification.showNotification
 
 class MainActivity : ComponentActivity() {
 
@@ -37,6 +39,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         requestNotificationPermission()
+        notificationChannel(this)
+        //showNotification(this)
         dataStoreManager = DataStoreManager(this)
         enableEdgeToEdge()
         setContent {
