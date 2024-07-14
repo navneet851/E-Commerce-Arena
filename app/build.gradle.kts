@@ -95,5 +95,9 @@ dependencies {
     //flows
     implementation(libs.kotlinx.coroutines.core)
 
+    //retrofit
+    implementation(libs.retrofit2.retrofit)
+    implementation(libs.converter.gson)
+
 
 }

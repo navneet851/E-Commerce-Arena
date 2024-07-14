@@ -14,9 +14,16 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import retrofit2.Retrofit
 
 class Api(private val uid : String) {
     private val firestore : FirebaseFirestore = Firebase.firestore
+
+
+    val api : FcmApi = Retrofit.Builder()
+        .baseUrl("")
+        .build()
+        .create(FcmApi::class.java)
 
     suspend fun getGames() : Flow<List<Game>> {
         return flow{
