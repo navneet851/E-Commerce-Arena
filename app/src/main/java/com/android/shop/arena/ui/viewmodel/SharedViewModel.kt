@@ -15,14 +15,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.shop.arena.api.Api
+import com.android.shop.arena.api.FcmApi
 import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.android.shop.arena.data.entity.Game
+import com.android.shop.arena.data.entity.NotificationBody
+import com.android.shop.arena.data.entity.SendMessage
 import com.android.shop.arena.data.entity.Transaction
 import com.android.shop.arena.data.entity.User
 import com.android.shop.arena.data.pref.DataStoreManager
 import com.bumptech.glide.Glide.init
 import com.google.android.play.integrity.internal.f
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +36,12 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import retrofit2.HttpException
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,8 +70,42 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
     private var api : Api? = null
 
     init {
+        viewModelScope.launch {
+            Firebase.messaging.subscribeToTopic("chat").await()
+        }
         getUser()
     }
+
+
+
+    private val fcmApi : FcmApi = Retrofit.Builder()
+        .baseUrl("http://10.0.2.2:8080/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create()
+
+    fun sendMessage(token : String?) {
+        viewModelScope.launch {
+            val messageDto = SendMessage(
+                token = token,
+                notification = NotificationBody(
+                    title = "server FCM New message!",
+                    body = "server FCM Send"
+                )
+            )
+
+            try {
+                fcmApi.sendMessage(messageDto)
+                Log.d("Token", "Message sent successfully")
+            } catch (e: HttpException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 
     fun getCurrentDateTimeFormatted(): String {
         val dateFormat = SimpleDateFormat("H:mm:ss  d-M-yyyy", Locale.getDefault())

@@ -1,6 +1,7 @@
 package com.android.shop.arena.ui.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,9 +54,11 @@ import com.android.shop.arena.ui.viewmodel.SharedViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.android.gms.common.internal.ServiceSpecificExtraArgs.GamesExtraArgs
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -122,7 +125,14 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                         onClick = {
                                     if (uid != ""){
                                         if (cartItems.isNotEmpty()){
-                                            navController.navigate("address")
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                            val token = FirebaseMessaging.getInstance().token.await()
+                                                if (token != null) {
+                                                    Log.d("Token", token)
+                                                    navController.navigate("address")
+                                                    cartViewModel.sendMessage(token)
+                                                }
+                                            }
                                         }
                                         else{
                                             Toast.makeText(navController.context, "Cart is Empty", Toast.LENGTH_SHORT).show()
