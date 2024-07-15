@@ -96,7 +96,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
 
             try {
                 fcmApi.sendMessage(messageDto)
-                Log.d("Token", "Message sent successfully")
+                Log.d("Token", "Message sent success ${messageDto.token}")
             } catch (e: HttpException) {
                 e.printStackTrace()
             } catch (e: IOException) {

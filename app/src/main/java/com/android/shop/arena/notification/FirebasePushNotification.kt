@@ -22,7 +22,7 @@ class FirebasePushNotification : FirebaseMessagingService() {
         super.onMessageReceived(message)
         message.notification?.let {
             Log.d("FirebasePushNotification", "Message Notification Body: ${it.body}")
-            //showNotification(this)
+            showNotification(this)
         }
     }
 

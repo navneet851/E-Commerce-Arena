@@ -130,7 +130,7 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                                                 if (token != null) {
                                                     Log.d("Token", token)
                                                     navController.navigate("address")
-                                                    cartViewModel.sendMessage(token)
+                                                    cartViewModel.sendMessage(null)
                                                 }
                                             }
                                         }
