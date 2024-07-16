@@ -7,6 +7,8 @@ import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -56,8 +58,10 @@ fun BottomBar(navController: NavHostController, visible: MutableState<Boolean>) 
         content = {
             NavigationBar(
                 Modifier
-                    .fillMaxWidth().height(90.dp),
-                tonalElevation = 6.dp,
+                    .navigationBarsPadding()
+                    .height(50.dp)
+                    .fillMaxWidth()
+                    ,
                 containerColor = CardColor,
 
                 ) {
@@ -80,7 +84,7 @@ fun BottomBar(navController: NavHostController, visible: MutableState<Boolean>) 
                                 painter = painterResource(id =
                                 if (currentRoute == item.route) item.selectedIcon else item.unSelectedIcon),
                                 contentDescription = item.title,
-                                modifier = Modifier.size(22.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         },
                         interactionSource = NoRippleInteractionSource(),
@@ -92,7 +96,7 @@ fun BottomBar(navController: NavHostController, visible: MutableState<Boolean>) 
                             indicatorColor = Color.Transparent
                         ),
                         label = {
-                            Text(text = item.title, fontSize = 12.sp)
+                            Text(text = item.title, fontSize = 11.sp, lineHeight = 1.sp)
                         },
                         alwaysShowLabel = true
                     )

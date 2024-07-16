@@ -79,7 +79,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
 
 
     private val fcmApi : FcmApi = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:8080/")
+        .baseUrl("https://arena-backend-7xkp.onrender.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create()

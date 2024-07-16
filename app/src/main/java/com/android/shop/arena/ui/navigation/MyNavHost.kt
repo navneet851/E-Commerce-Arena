@@ -68,7 +68,7 @@ fun MyNavHost(
             }
             composable("address") {
                 bars.value = false
-                AddressScreen(navController)
+                AddressScreen(navController, paddingValues)
             }
             composable<Order> {
                 val order : Order = it.toRoute()

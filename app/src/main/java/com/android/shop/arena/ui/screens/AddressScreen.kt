@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,10 +59,11 @@ import com.android.shop.arena.ui.navigation.Order
 import com.android.shop.arena.ui.theme.CardColor
 import com.android.shop.arena.ui.theme.InputColor
 import com.android.shop.arena.ui.viewmodel.SharedViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddressScreen(navController: NavController) {
+fun AddressScreen(navController: NavController, appPadding: PaddingValues) {
 
     val orderViewModel : SharedViewModel = viewModel()
     val games by orderViewModel.games.collectAsState()
@@ -93,6 +95,7 @@ fun AddressScreen(navController: NavController) {
     }
     else{
         Scaffold(
+            modifier = Modifier.padding( 0.dp, 0.dp, 0.dp, appPadding.calculateBottomPadding()),
             containerColor = Color.White,
 
             topBar = {
@@ -134,6 +137,14 @@ fun AddressScreen(navController: NavController) {
             },
 
             bottomBar = {
+
+                var token by remember{
+                    mutableStateOf<String?>(null)
+                }
+
+                FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                    token = it
+                }
                 Column(
                     modifier = Modifier
                         .background(Color(0xFFEAFFEE))
@@ -191,6 +202,10 @@ fun AddressScreen(navController: NavController) {
                                 addTransactionToFirestore(transaction){
                                     showLoader = false
                                     navController.navigate(Order(time = time))
+                                    if (token != null) {
+                                        orderViewModel.sendMessage(token)
+                                    }
+
                                 }
 
                             }
@@ -325,8 +340,3 @@ fun AddressScreen(navController: NavController) {
 
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun AddressPrev() {
-    AddressScreen(rememberNavController())
-}

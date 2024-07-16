@@ -125,14 +125,15 @@ fun CartScreen(paddingValues: PaddingValues, navController: NavController) {
                         onClick = {
                                     if (uid != ""){
                                         if (cartItems.isNotEmpty()){
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                            val token = FirebaseMessaging.getInstance().token.await()
-                                                if (token != null) {
-                                                    Log.d("Token", token)
-                                                    navController.navigate("address")
-                                                    cartViewModel.sendMessage(null)
-                                                }
-                                            }
+                                            navController.navigate("address")
+//                                            CoroutineScope(Dispatchers.Main).launch {
+//                                            val token = FirebaseMessaging.getInstance().token.await()
+//                                                if (token != null) {
+//                                                    Log.d("Token", token)
+//                                                    navController.navigate("address")
+//                                                    cartViewModel.sendMessage(null)
+//                                                }
+//                                            }
                                         }
                                         else{
                                             Toast.makeText(navController.context, "Cart is Empty", Toast.LENGTH_SHORT).show()
