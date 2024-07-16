@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Checkbox
@@ -108,11 +110,12 @@ fun OrderScreen(dateAndTime: String, navController: NavHostController) {
                 Column(
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(30.dp, 0.dp)
+                        .padding(30.dp, 0.dp, 30.dp, 30.dp)
                         .fillMaxWidth()
                         .heightIn(min = 600.dp)
                         .clip(RoundedCornerShape(40.dp))
                         .background(CardColor)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

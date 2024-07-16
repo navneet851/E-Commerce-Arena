@@ -161,6 +161,14 @@ fun ProfileScreen(
                             dataStore.deleteUID()
                         }
                     }
+
+                    if(uid == "9KH9yAzgMvchrdC5AQ8GgzrK4Bq1"){
+                        ProfileMenuItem(icon = R.drawable.notification, title = "Advertise"){
+                            profileViewModel.sendMessage(null)
+                        }
+                    }
+
+
                 }
 
             }

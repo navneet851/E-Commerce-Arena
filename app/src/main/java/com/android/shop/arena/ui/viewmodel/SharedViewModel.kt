@@ -89,8 +89,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
             val messageDto = SendMessage(
                 token = token,
                 notification = NotificationBody(
-                    title = "server FCM New message!",
-                    body = "server FCM Send"
+                    title = "Arena Games",
+                    body = "Explore PC games!"
                 )
             )
 

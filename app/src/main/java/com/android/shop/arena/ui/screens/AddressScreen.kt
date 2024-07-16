@@ -1,5 +1,6 @@
 package com.android.shop.arena.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -203,6 +204,7 @@ fun AddressScreen(navController: NavController, appPadding: PaddingValues) {
                                     showLoader = false
                                     navController.navigate(Order(time = time))
                                     if (token != null) {
+                                        Log.d("Token", "Token: $token")
                                         orderViewModel.sendMessage(token)
                                     }
 

@@ -55,7 +55,7 @@ fun App(modifier: Modifier = Modifier) {
     Scaffold (
         containerColor = Color.White,
         topBar = {
-            TopBar(bars)
+            TopBar(bars, navController)
         },
         bottomBar = {
             BottomBar(navController = navController, bars)

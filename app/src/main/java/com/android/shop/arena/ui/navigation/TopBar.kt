@@ -21,12 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.android.shop.arena.R
 import com.android.shop.arena.ui.theme.CardColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(visible: MutableState<Boolean>) {
+fun TopBar(visible: MutableState<Boolean>, navController: NavHostController) {
 
     AnimatedVisibility(
         visible = visible.value,
@@ -56,7 +57,9 @@ fun TopBar(visible: MutableState<Boolean>) {
                     )
                 },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.navigate("notification")
+                    }) {
                         Icon(
                             modifier = Modifier.size(25.dp),
                             painter = painterResource(id = R.drawable.notification),

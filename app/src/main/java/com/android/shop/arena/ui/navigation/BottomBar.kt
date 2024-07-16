@@ -59,7 +59,7 @@ fun BottomBar(navController: NavHostController, visible: MutableState<Boolean>) 
             NavigationBar(
                 Modifier
                     .navigationBarsPadding()
-                    .height(50.dp)
+                    .height(60.dp)
                     .fillMaxWidth()
                     ,
                 containerColor = CardColor,
