@@ -205,7 +205,7 @@ fun AddressScreen(navController: NavController, appPadding: PaddingValues) {
                                     navController.navigate(Order(time = time))
                                     if (token != null) {
                                         Log.d("Token", "Token: $token")
-                                        orderViewModel.sendMessage(token)
+                                        orderViewModel.sendMessage(token, "Order", "Order Received")
                                     }
 
                                 }

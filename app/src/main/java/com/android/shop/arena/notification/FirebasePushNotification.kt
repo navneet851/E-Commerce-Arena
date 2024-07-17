@@ -20,10 +20,12 @@ class FirebasePushNotification : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        message.notification?.let {
-            Log.d("FirebasePushNotification", "Message Notification Body: ${it.body}")
-            showNotification(this)
-        }
+
+            message.notification?.let {
+                Log.d("FirebasePushNotification", "Message Notification Body: ${it.body}")
+                showNotification(this, it.title!!, it.body!!)
+            }
+
     }
 
 

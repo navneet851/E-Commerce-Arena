@@ -34,13 +34,13 @@ fun notificationChannel(context: Context){
     }
 }
 
-fun showNotification(context: Context){
+fun showNotification(context: Context, title : String, body : String){
 
 
         val builder = NotificationCompat.Builder(context, Constants.ORDER_CHANNEL_ID)
         .setSmallIcon(R.drawable.arena_logo)
-        .setContentTitle("Order")
-        .setContentText("Order Received")
+        .setContentTitle(title)
+        .setContentText(body)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
         .setDefaults(NotificationCompat.DEFAULT_ALL)

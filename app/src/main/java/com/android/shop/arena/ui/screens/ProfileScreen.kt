@@ -62,10 +62,10 @@ fun ProfileScreen(
 
     val uid by dataStore.uidFlow.collectAsState(initial = "")
     val coroutineScope = rememberCoroutineScope()
-
-    var user by remember {
-        mutableStateOf<User?>(null)
-    }
+//
+//    var user by remember {
+//        mutableStateOf<User?>(null)
+//    }
 
 
 
@@ -98,6 +98,13 @@ fun ProfileScreen(
     }
     else{
 
+//        LaunchedEffect(uid) {
+//            val userSnapshot = fetchUserByUID(uid!!)
+//            user = userSnapshot
+//        }
+
+        val user = profileViewModel.user.value
+
 
         Column(
             modifier = Modifier
@@ -106,10 +113,7 @@ fun ProfileScreen(
                 .background(Color.White)
         ) {
 
-            LaunchedEffect(uid) {
-                val userSnapshot = fetchUserByUID(uid!!)
-                user = userSnapshot
-            }
+
 
             if (user == null){
                 Loader()
@@ -135,7 +139,7 @@ fun ProfileScreen(
                                 .clip(shape = RoundedCornerShape(50)),
                             painter = painterResource(id = R.drawable.arena_logo),
                             contentDescription = "profile image")
-                        Text(text = user!!.name, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                        Text(text = user.name ?: "User", fontSize = 18.sp, fontWeight = FontWeight.Medium)
                     }
 
 
@@ -164,7 +168,7 @@ fun ProfileScreen(
 
                     if(uid == "9KH9yAzgMvchrdC5AQ8GgzrK4Bq1"){
                         ProfileMenuItem(icon = R.drawable.notification, title = "Advertise"){
-                            profileViewModel.sendMessage(null)
+                            profileViewModel.sendMessage(null, "Arena Games", "Explore PC Games with Arena")
                         }
                     }
 

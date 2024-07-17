@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.shop.arena.api.Api
 import com.android.shop.arena.api.FcmApi
+import com.android.shop.arena.api.auth.fetchUserByUID
 import com.android.shop.arena.data.entity.Address
 import com.android.shop.arena.data.entity.Cart
 import com.android.shop.arena.data.entity.Game
@@ -67,6 +68,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
 
     val userId : MutableState<String> = mutableStateOf("")
 
+    val user : MutableState<User?> = mutableStateOf(null)
+
     private var api : Api? = null
 
     init {
@@ -84,13 +87,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
         .build()
         .create()
 
-    fun sendMessage(token : String?) {
+    fun sendMessage(token : String?, title : String, body : String) {
         viewModelScope.launch {
             val messageDto = SendMessage(
                 token = token,
                 notification = NotificationBody(
-                    title = "Arena Games",
-                    body = "Explore PC games!"
+                    title = title,
+                    body = body
                 )
             )
 
@@ -128,6 +131,9 @@ class SharedViewModel(application: Application) : AndroidViewModel(application){
         dataStoreManager.uidFlow.collect{ uid ->
             userId.value = uid?: ""
             api = Api(userId.value)
+            if (uid != null){
+                user.value = fetchUserByUID(uid)
+            }
             getGames()
             cartItems()
             getAddresses()

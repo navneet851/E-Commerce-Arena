@@ -1,5 +1,6 @@
 package com.android.shop.arena.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -15,16 +16,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.android.shop.arena.R
@@ -36,6 +41,20 @@ import com.android.shop.arena.ui.viewmodel.SharedViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyOrdersScreen(navController: NavHostController) {
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        DisposableEffect(Unit) {
+            val window = (view.context as Activity).window
+            window.statusBarColor = Color.Transparent.toArgb()
+            val windowInsetsController = WindowCompat.getInsetsController(window, view)
+            windowInsetsController.isAppearanceLightStatusBars = false
+
+            onDispose {
+                windowInsetsController.isAppearanceLightStatusBars = true
+            }
+        }
+    }
 
     Scaffold(
         containerColor = Color.Black,
