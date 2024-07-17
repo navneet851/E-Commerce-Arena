@@ -27,7 +27,7 @@ fun Context.getActivity(): Activity? = when (this) {
 
 
 
-fun onLoginClicked (context: Context, phoneNumber: String, onCodeSent: (Boolean) -> Unit) {
+fun onLoginClicked (context: Context, phoneNumber: String, onCodeSent: (String) -> Unit) {
     auth.setLanguageCode("en")
     val callback = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
@@ -37,12 +37,13 @@ fun onLoginClicked (context: Context, phoneNumber: String, onCodeSent: (Boolean)
 
         override fun onVerificationFailed(p0: FirebaseException) {
             Log.d("phoneBook", "verification failed$p0")
+            onCodeSent("failed")
         }
 
         override fun onCodeSent(verificationId: String,
                                 token: PhoneAuthProvider.ForceResendingToken) {
             storedVerificationId = verificationId
-            onCodeSent(true)
+            onCodeSent("Success")
         }
 
     }

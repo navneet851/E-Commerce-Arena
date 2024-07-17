@@ -159,8 +159,14 @@ fun LoginScreen(navController: NavHostController, dataStore: DataStoreManager) {
                         }
                         else{
                             onLoginClicked(context = context, phoneNumber = phoneNumber){
-                                otpRequestProgressed = it
-                                otpReceived = it
+                                if(it == "failed"){
+                                    Toast.makeText(context, "Try After Sometime", Toast.LENGTH_SHORT).show()
+                                }
+                                else{
+                                    otpReceived = true
+                                }
+                                otpRequestProgressed = true
+
                             }
                             otpRequestProgressed = false
                         }

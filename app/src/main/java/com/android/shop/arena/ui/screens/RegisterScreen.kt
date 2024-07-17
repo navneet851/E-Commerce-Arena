@@ -171,8 +171,14 @@ fun RegisterScreen(navController: NavHostController, dataStore: DataStoreManager
                 else{
                     if (phoneNumber.isNotBlank() && (phoneNumber.length == 10) && name.isNotBlank() && (password.isNotBlank() == confirmPassword.isNotBlank())) {
                         onLoginClicked(context = context, phoneNumber = phoneNumber){
-                            isDialogVisible = it
-                            otpRequestProgressed = it
+                            if(it == "failed"){
+                                Toast.makeText(context, "Try After Sometime", Toast.LENGTH_SHORT).show()
+                            }
+                            else{
+                                isDialogVisible = true
+                            }
+
+                            otpRequestProgressed = true
                         }
                         otpRequestProgressed = false
                     } else {
